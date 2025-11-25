@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using BlazorTeacher.Shared.Models;
 
 namespace BlazorTeacher.Dashboard.Services;
@@ -7,7 +8,7 @@ namespace BlazorTeacher.Dashboard.Services;
 /// </summary>
 public class ChapterService
 {
-    private readonly Dictionary<int, ChapterProgress> _progressCache = new();
+    private readonly ConcurrentDictionary<int, ChapterProgress> _progressCache = new();
     
     public event Action? OnProgressChanged;
 
@@ -505,12 +506,11 @@ public class ChapterService
     /// </summary>
     public ChapterProgress GetProgress(int chapterId)
     {
-        if (_progressCache.TryGetValue(chapterId, out var progress))
-        {
-            return progress;
-        }
-        
-        return new ChapterProgress { ChapterId = chapterId, State = LearningState.NotStarted };
+        return _progressCache.GetOrAdd(chapterId, id => new ChapterProgress 
+        { 
+            ChapterId = id, 
+            State = LearningState.NotStarted 
+        });
     }
 
     /// <summary>
@@ -547,12 +547,7 @@ public class ChapterService
     /// </summary>
     public void StartChapter(int chapterId)
     {
-        if (!_progressCache.ContainsKey(chapterId))
-        {
-            _progressCache[chapterId] = new ChapterProgress { ChapterId = chapterId };
-        }
-        
-        var progress = _progressCache[chapterId];
+        var progress = GetProgress(chapterId);
         if (progress.State == LearningState.NotStarted)
         {
             progress.State = LearningState.InProgress;
@@ -567,12 +562,12 @@ public class ChapterService
     /// </summary>
     public void UpdateProgress(int chapterId, int percentage)
     {
-        if (!_progressCache.ContainsKey(chapterId))
+        var progress = GetProgress(chapterId);
+        if (progress.State == LearningState.NotStarted)
         {
             StartChapter(chapterId);
         }
         
-        var progress = _progressCache[chapterId];
         progress.ProgressPercentage = Math.Clamp(percentage, 0, 100);
         
         if (percentage >= 100 && progress.State != LearningState.Completed)
@@ -589,12 +584,7 @@ public class ChapterService
     /// </summary>
     public void CompleteChapter(int chapterId)
     {
-        if (!_progressCache.ContainsKey(chapterId))
-        {
-            _progressCache[chapterId] = new ChapterProgress { ChapterId = chapterId };
-        }
-        
-        var progress = _progressCache[chapterId];
+        var progress = GetProgress(chapterId);
         progress.State = LearningState.Completed;
         progress.CompletedAt = DateTime.UtcNow;
         progress.ProgressPercentage = 100;
@@ -608,9 +598,8 @@ public class ChapterService
     /// </summary>
     public void ResetChapter(int chapterId)
     {
-        if (_progressCache.ContainsKey(chapterId))
+        if (_progressCache.TryRemove(chapterId, out _))
         {
-            _progressCache.Remove(chapterId);
             OnProgressChanged?.Invoke();
         }
     }
