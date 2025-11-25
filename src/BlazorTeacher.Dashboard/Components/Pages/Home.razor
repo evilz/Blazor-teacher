@@ -2,203 +2,263 @@
 
 <PageTitle>Blazor Teacher - Home</PageTitle>
 
-<div class="home-container">
-    <div class="hero-section">
-        <h1>🎓 Welcome to Blazor Teacher</h1>
-        <p class="hero-subtitle">An Interactive .NET 10 Tutorial for Building REST APIs and Blazor Dashboards</p>
-    </div>
-
-    <div class="features-grid">
-        <div class="feature-card">
-            <span class="feature-icon">📚</span>
-            <h3>Full Tutorial Outline</h3>
-            <p>Complete 28-chapter guide covering .NET 10 API development and Blazor Dashboard with progress tracking.</p>
-            <a href="/tutorial/outline" class="feature-link">View All Chapters →</a>
-        </div>
-
-        <div class="feature-card">
-            <span class="feature-icon">🚀</span>
-            <h3>REST API with EF Core</h3>
-            <p>Learn to build a complete CRUD API using ASP.NET Core Web API, Entity Framework Core, and SQLite.</p>
-            <a href="/tutorial/api" class="feature-link">Explore API Tutorial →</a>
-        </div>
-
-        <div class="feature-card">
-            <span class="feature-icon">⚡</span>
-            <h3>Blazor Components</h3>
-            <p>Master Blazor components, directives, events, lifecycle, and rendering modes.</p>
-            <a href="/tutorial/components" class="feature-link">Learn Components →</a>
-        </div>
-
-        <div class="feature-card">
-            <span class="feature-icon">🔄</span>
-            <h3>State Management</h3>
-            <p>Understand cascading parameters, component communication, and state patterns.</p>
-            <a href="/tutorial/state" class="feature-link">Explore State →</a>
-        </div>
-
-        <div class="feature-card">
-            <span class="feature-icon">📊</span>
-            <h3>Dashboard Demo</h3>
-            <p>See all concepts in action with our fully functional course management dashboard.</p>
-            <a href="/courses" class="feature-link">View Dashboard →</a>
+<div class="space-y-8">
+    <!-- Hero Section -->
+    <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary-600 via-primary-700 to-accent-600 px-6 py-12 shadow-xl sm:px-12 lg:py-16">
+        <div class="absolute inset-0 opacity-30" style="background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.15) 1px, transparent 0); background-size: 24px 24px;"></div>
+        <div class="relative mx-auto max-w-3xl text-center">
+            <h1 class="text-3xl font-bold tracking-tight text-white sm:text-4xl lg:text-5xl">
+                Welcome to Blazor Teacher
+            </h1>
+            <p class="mt-4 text-lg text-primary-100 sm:text-xl">
+                An Interactive .NET 10 Tutorial for Building REST APIs and Blazor Dashboards
+            </p>
+            <div class="mt-8 flex flex-col gap-4 sm:flex-row sm:justify-center">
+                <a href="/tutorial/outline" class="inline-flex items-center justify-center gap-2 rounded-xl bg-white px-6 py-3 text-sm font-semibold text-primary-700 shadow-lg hover:bg-primary-50 transition-colors">
+                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+                    </svg>
+                    Start Learning
+                </a>
+                <a href="/courses" class="inline-flex items-center justify-center gap-2 rounded-xl bg-white/10 px-6 py-3 text-sm font-semibold text-white ring-1 ring-white/20 hover:bg-white/20 transition-colors">
+                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" />
+                    </svg>
+                    View Dashboard
+                </a>
+            </div>
         </div>
     </div>
 
-    <div class="quick-start">
-        <h2>📚 Tutorial Contents</h2>
-        <div class="contents-list">
-            <div class="content-section">
-                <h4>API Development</h4>
-                <ul>
-                    <li>Environment Setup</li>
-                    <li>Solution Structure</li>
-                    <li>Domain Modeling</li>
-                    <li>EF Core & Migrations</li>
-                    <li>Validation</li>
-                    <li>Error Handling</li>
-                    <li>Logging</li>
+    <!-- Feature Cards Grid -->
+    <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <!-- Card 1: Tutorial Outline -->
+        <div class="group relative overflow-hidden rounded-xl bg-white p-6 shadow-sm ring-1 ring-slate-200 hover:shadow-lg hover:ring-primary-200 transition-all duration-300">
+            <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-primary-500 to-primary-600 text-white shadow-lg shadow-primary-500/25">
+                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+                </svg>
+            </div>
+            <h3 class="mt-4 text-lg font-semibold text-slate-900">Full Tutorial Outline</h3>
+            <p class="mt-2 text-sm text-slate-600 leading-relaxed">Complete 28-chapter guide covering .NET 10 API development and Blazor Dashboard with progress tracking.</p>
+            <a href="/tutorial/outline" class="mt-4 inline-flex items-center gap-1 text-sm font-medium text-primary-600 hover:text-primary-700">
+                View All Chapters
+                <svg class="h-4 w-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                </svg>
+            </a>
+        </div>
+
+        <!-- Card 2: REST API -->
+        <div class="group relative overflow-hidden rounded-xl bg-white p-6 shadow-sm ring-1 ring-slate-200 hover:shadow-lg hover:ring-accent-200 transition-all duration-300">
+            <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-accent-500 to-accent-600 text-white shadow-lg shadow-accent-500/25">
+                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5" />
+                </svg>
+            </div>
+            <h3 class="mt-4 text-lg font-semibold text-slate-900">REST API with EF Core</h3>
+            <p class="mt-2 text-sm text-slate-600 leading-relaxed">Learn to build a complete CRUD API using ASP.NET Core Web API, Entity Framework Core, and SQLite.</p>
+            <a href="/tutorial/api" class="mt-4 inline-flex items-center gap-1 text-sm font-medium text-accent-600 hover:text-accent-700">
+                Explore API Tutorial
+                <svg class="h-4 w-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                </svg>
+            </a>
+        </div>
+
+        <!-- Card 3: Blazor Components -->
+        <div class="group relative overflow-hidden rounded-xl bg-white p-6 shadow-sm ring-1 ring-slate-200 hover:shadow-lg hover:ring-emerald-200 transition-all duration-300">
+            <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 text-white shadow-lg shadow-emerald-500/25">
+                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M14.25 6.087c0-.355.186-.676.401-.959.221-.29.349-.634.349-1.003 0-1.036-1.007-1.875-2.25-1.875s-2.25.84-2.25 1.875c0 .369.128.713.349 1.003.215.283.401.604.401.959v0a.64.64 0 01-.657.643 48.39 48.39 0 01-4.163-.3c.186 1.613.293 3.25.315 4.907a.656.656 0 01-.658.663v0c-.355 0-.676-.186-.959-.401a1.647 1.647 0 00-1.003-.349c-1.036 0-1.875 1.007-1.875 2.25s.84 2.25 1.875 2.25c.369 0 .713-.128 1.003-.349.283-.215.604-.401.959-.401v0c.31 0 .555.26.532.57a48.039 48.039 0 01-.642 5.056c1.518.19 3.058.309 4.616.354a.64.64 0 00.657-.643v0c0-.355-.186-.676-.401-.959a1.647 1.647 0 01-.349-1.003c0-1.035 1.008-1.875 2.25-1.875 1.243 0 2.25.84 2.25 1.875 0 .369-.128.713-.349 1.003-.215.283-.4.604-.4.959v0c0 .333.277.599.61.58a48.1 48.1 0 005.427-.63 48.05 48.05 0 00.582-4.717.532.532 0 00-.533-.57v0c-.355 0-.676.186-.959.401-.29.221-.634.349-1.003.349-1.035 0-1.875-1.007-1.875-2.25s.84-2.25 1.875-2.25c.37 0 .713.128 1.003.349.283.215.604.401.96.401v0a.656.656 0 00.658-.663 48.422 48.422 0 00-.37-5.36c-1.886.342-3.81.574-5.766.689a.578.578 0 01-.61-.58v0z" />
+                </svg>
+            </div>
+            <h3 class="mt-4 text-lg font-semibold text-slate-900">Blazor Components</h3>
+            <p class="mt-2 text-sm text-slate-600 leading-relaxed">Master Blazor components, directives, events, lifecycle, and rendering modes.</p>
+            <a href="/tutorial/components" class="mt-4 inline-flex items-center gap-1 text-sm font-medium text-emerald-600 hover:text-emerald-700">
+                Learn Components
+                <svg class="h-4 w-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                </svg>
+            </a>
+        </div>
+
+        <!-- Card 4: State Management -->
+        <div class="group relative overflow-hidden rounded-xl bg-white p-6 shadow-sm ring-1 ring-slate-200 hover:shadow-lg hover:ring-amber-200 transition-all duration-300">
+            <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-amber-500 to-amber-600 text-white shadow-lg shadow-amber-500/25">
+                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" />
+                </svg>
+            </div>
+            <h3 class="mt-4 text-lg font-semibold text-slate-900">State Management</h3>
+            <p class="mt-2 text-sm text-slate-600 leading-relaxed">Understand cascading parameters, component communication, and state patterns.</p>
+            <a href="/tutorial/state" class="mt-4 inline-flex items-center gap-1 text-sm font-medium text-amber-600 hover:text-amber-700">
+                Explore State
+                <svg class="h-4 w-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                </svg>
+            </a>
+        </div>
+
+        <!-- Card 5: Dashboard Demo -->
+        <div class="group relative overflow-hidden rounded-xl bg-white p-6 shadow-sm ring-1 ring-slate-200 hover:shadow-lg hover:ring-rose-200 transition-all duration-300 sm:col-span-2 lg:col-span-2">
+            <div class="flex items-start gap-6">
+                <div class="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-rose-500 to-rose-600 text-white shadow-lg shadow-rose-500/25">
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" />
+                    </svg>
+                </div>
+                <div class="flex-1">
+                    <h3 class="text-lg font-semibold text-slate-900">Dashboard Demo</h3>
+                    <p class="mt-2 text-sm text-slate-600 leading-relaxed">See all concepts in action with our fully functional course management dashboard. Create, edit, and delete courses with a beautiful modern UI.</p>
+                    <a href="/courses" class="mt-4 inline-flex items-center gap-1 text-sm font-medium text-rose-600 hover:text-rose-700">
+                        View Dashboard
+                        <svg class="h-4 w-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tutorial Contents Section -->
+    <div class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200 sm:p-8">
+        <h2 class="text-xl font-semibold text-slate-900">Tutorial Contents</h2>
+        <p class="mt-1 text-sm text-slate-500">Everything you'll learn in this comprehensive tutorial</p>
+        
+        <div class="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <!-- API Development -->
+            <div class="space-y-3">
+                <div class="flex items-center gap-2">
+                    <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-primary-100 text-primary-600">
+                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5" />
+                        </svg>
+                    </div>
+                    <h4 class="font-medium text-slate-900">API Development</h4>
+                </div>
+                <ul class="space-y-2 pl-10">
+                    <li class="flex items-center gap-2 text-sm text-slate-600">
+                        <svg class="h-4 w-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                        </svg>
+                        Environment Setup
+                    </li>
+                    <li class="flex items-center gap-2 text-sm text-slate-600">
+                        <svg class="h-4 w-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                        </svg>
+                        Solution Structure
+                    </li>
+                    <li class="flex items-center gap-2 text-sm text-slate-600">
+                        <svg class="h-4 w-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                        </svg>
+                        Domain Modeling
+                    </li>
+                    <li class="flex items-center gap-2 text-sm text-slate-600">
+                        <svg class="h-4 w-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                        </svg>
+                        EF Core & Migrations
+                    </li>
+                    <li class="flex items-center gap-2 text-sm text-slate-600">
+                        <svg class="h-4 w-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                        </svg>
+                        Validation & Logging
+                    </li>
                 </ul>
             </div>
-            <div class="content-section">
-                <h4>Blazor Components</h4>
-                <ul>
-                    <li>Components Overview</li>
-                    <li>Directives</li>
-                    <li>Events</li>
-                    <li>Lifecycle</li>
-                    <li>Rendering Modes</li>
-                    <li>Reusable Components</li>
+
+            <!-- Blazor Components -->
+            <div class="space-y-3">
+                <div class="flex items-center gap-2">
+                    <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-accent-100 text-accent-600">
+                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M14.25 6.087c0-.355.186-.676.401-.959.221-.29.349-.634.349-1.003 0-1.036-1.007-1.875-2.25-1.875s-2.25.84-2.25 1.875c0 .369.128.713.349 1.003.215.283.401.604.401.959v0a.64.64 0 01-.657.643 48.39 48.39 0 01-4.163-.3c.186 1.613.293 3.25.315 4.907a.656.656 0 01-.658.663v0c-.355 0-.676-.186-.959-.401a1.647 1.647 0 00-1.003-.349c-1.036 0-1.875 1.007-1.875 2.25s.84 2.25 1.875 2.25c.369 0 .713-.128 1.003-.349.283-.215.604-.401.959-.401v0c.31 0 .555.26.532.57a48.039 48.039 0 01-.642 5.056c1.518.19 3.058.309 4.616.354a.64.64 0 00.657-.643v0c0-.355-.186-.676-.401-.959a1.647 1.647 0 01-.349-1.003c0-1.035 1.008-1.875 2.25-1.875 1.243 0 2.25.84 2.25 1.875 0 .369-.128.713-.349 1.003-.215.283-.4.604-.4.959v0c0 .333.277.599.61.58a48.1 48.1 0 005.427-.63 48.05 48.05 0 00.582-4.717.532.532 0 00-.533-.57v0c-.355 0-.676.186-.959.401-.29.221-.634.349-1.003.349-1.035 0-1.875-1.007-1.875-2.25s.84-2.25 1.875-2.25c.37 0 .713.128 1.003.349.283.215.604.401.96.401v0a.656.656 0 00.658-.663 48.422 48.422 0 00-.37-5.36c-1.886.342-3.81.574-5.766.689a.578.578 0 01-.61-.58v0z" />
+                        </svg>
+                    </div>
+                    <h4 class="font-medium text-slate-900">Blazor Components</h4>
+                </div>
+                <ul class="space-y-2 pl-10">
+                    <li class="flex items-center gap-2 text-sm text-slate-600">
+                        <svg class="h-4 w-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                        </svg>
+                        Components Overview
+                    </li>
+                    <li class="flex items-center gap-2 text-sm text-slate-600">
+                        <svg class="h-4 w-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                        </svg>
+                        Directives & Events
+                    </li>
+                    <li class="flex items-center gap-2 text-sm text-slate-600">
+                        <svg class="h-4 w-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                        </svg>
+                        Lifecycle Methods
+                    </li>
+                    <li class="flex items-center gap-2 text-sm text-slate-600">
+                        <svg class="h-4 w-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                        </svg>
+                        Rendering Modes
+                    </li>
+                    <li class="flex items-center gap-2 text-sm text-slate-600">
+                        <svg class="h-4 w-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                        </svg>
+                        Reusable Components
+                    </li>
                 </ul>
             </div>
-            <div class="content-section">
-                <h4>Communication</h4>
-                <ul>
-                    <li>Component Parameters</li>
-                    <li>Cascading Parameters</li>
-                    <li>Event Callbacks</li>
-                    <li>State Management</li>
-                    <li>CSS Isolation</li>
-                    <li>Styling Best Practices</li>
+
+            <!-- Communication -->
+            <div class="space-y-3">
+                <div class="flex items-center gap-2">
+                    <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-100 text-emerald-600">
+                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" />
+                        </svg>
+                    </div>
+                    <h4 class="font-medium text-slate-900">Communication</h4>
+                </div>
+                <ul class="space-y-2 pl-10">
+                    <li class="flex items-center gap-2 text-sm text-slate-600">
+                        <svg class="h-4 w-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                        </svg>
+                        Component Parameters
+                    </li>
+                    <li class="flex items-center gap-2 text-sm text-slate-600">
+                        <svg class="h-4 w-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                        </svg>
+                        Cascading Parameters
+                    </li>
+                    <li class="flex items-center gap-2 text-sm text-slate-600">
+                        <svg class="h-4 w-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                        </svg>
+                        Event Callbacks
+                    </li>
+                    <li class="flex items-center gap-2 text-sm text-slate-600">
+                        <svg class="h-4 w-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                        </svg>
+                        State Management
+                    </li>
+                    <li class="flex items-center gap-2 text-sm text-slate-600">
+                        <svg class="h-4 w-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                        </svg>
+                        CSS Isolation
+                    </li>
                 </ul>
             </div>
         </div>
     </div>
 </div>
-
-<style>
-    .home-container {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 2rem;
-    }
-
-    .hero-section {
-        text-align: center;
-        padding: 3rem 1rem;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        border-radius: 16px;
-        color: white;
-        margin-bottom: 2rem;
-    }
-
-    .hero-section h1 {
-        font-size: 2.5rem;
-        margin: 0 0 1rem 0;
-    }
-
-    .hero-subtitle {
-        font-size: 1.2rem;
-        opacity: 0.9;
-        margin: 0;
-    }
-
-    .features-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-        gap: 1.5rem;
-        margin-bottom: 3rem;
-    }
-
-    .feature-card {
-        background: white;
-        padding: 1.5rem;
-        border-radius: 12px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        transition: transform 0.2s, box-shadow 0.2s;
-    }
-
-    .feature-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
-    }
-
-    .feature-icon {
-        font-size: 2.5rem;
-        display: block;
-        margin-bottom: 1rem;
-    }
-
-    .feature-card h3 {
-        margin: 0 0 0.5rem 0;
-        color: #333;
-    }
-
-    .feature-card p {
-        color: #666;
-        margin: 0 0 1rem 0;
-        line-height: 1.5;
-    }
-
-    .feature-link {
-        color: #667eea;
-        text-decoration: none;
-        font-weight: 500;
-    }
-
-    .feature-link:hover {
-        text-decoration: underline;
-    }
-
-    .quick-start {
-        background: #f8f9fa;
-        padding: 2rem;
-        border-radius: 12px;
-    }
-
-    .quick-start h2 {
-        margin: 0 0 1.5rem 0;
-        color: #333;
-    }
-
-    .contents-list {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 2rem;
-    }
-
-    .content-section h4 {
-        color: #667eea;
-        margin: 0 0 0.75rem 0;
-    }
-
-    .content-section ul {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-    }
-
-    .content-section li {
-        padding: 0.35rem 0;
-        color: #555;
-        position: relative;
-        padding-left: 1.25rem;
-    }
-
-    .content-section li::before {
-        content: "✓";
-        position: absolute;
-        left: 0;
-        color: #27ae60;
-    }
-</style>

@@ -9,13 +9,42 @@
 
 @if (IsOpen)
 {
-    <div class="dialog-overlay" @onclick="Cancel" @onkeydown="HandleKeyDown" tabindex="0">
-        <div class="dialog-content" @onclick:stopPropagation>
-            <h3 class="dialog-title">@Title</h3>
-            <p class="dialog-message">@Message</p>
-            <div class="dialog-actions">
-                <button class="btn btn-secondary" @onclick="Cancel">@CancelText</button>
-                <button class="btn btn-@ConfirmButtonType" @onclick="Confirm">@ConfirmText</button>
+    <div class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="confirm-modal-title" role="dialog" aria-modal="true">
+        <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+            <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" @onclick="Cancel"></div>
+            <div class="relative transform overflow-hidden rounded-xl bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6" @onclick:stopPropagation @onkeydown="HandleKeyDown" tabindex="0">
+                <div class="sm:flex sm:items-start">
+                    <div class="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full @(ConfirmButtonType == "danger" ? "bg-red-100" : "bg-primary-100") sm:mx-0 sm:h-10 sm:w-10">
+                        @if (ConfirmButtonType == "danger")
+                        {
+                            <svg class="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+                            </svg>
+                        }
+                        else
+                        {
+                            <svg class="h-6 w-6 text-primary-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z" />
+                            </svg>
+                        }
+                    </div>
+                    <div class="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
+                        <h3 class="text-lg font-semibold leading-6 text-slate-900" id="confirm-modal-title">@Title</h3>
+                        <div class="mt-2">
+                            <p class="text-sm text-slate-600">@Message</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse gap-3">
+                    <button type="button" @onclick="Confirm" 
+                            class="inline-flex w-full justify-center rounded-lg px-4 py-2.5 text-sm font-semibold shadow-sm sm:w-auto transition-colors @(ConfirmButtonType == "danger" ? "bg-red-600 text-white hover:bg-red-700" : "bg-primary-600 text-white hover:bg-primary-700")">
+                        @ConfirmText
+                    </button>
+                    <button type="button" @onclick="Cancel" 
+                            class="mt-3 inline-flex w-full justify-center rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50 sm:mt-0 sm:w-auto transition-colors">
+                        @CancelText
+                    </button>
+                </div>
             </div>
         </div>
     </div>
