@@ -1,0 +1,63 @@
+@* 
+    ConfirmDialog.razor
+    A reusable confirmation dialog component.
+    Demonstrates:
+    - Event callbacks with parameters
+    - Component visibility state
+    - Keyboard event handling
+*@
+
+@if (IsOpen)
+{
+    <div class="dialog-overlay" @onclick="Cancel" @onkeydown="HandleKeyDown" tabindex="0">
+        <div class="dialog-content" @onclick:stopPropagation>
+            <h3 class="dialog-title">@Title</h3>
+            <p class="dialog-message">@Message</p>
+            <div class="dialog-actions">
+                <button class="btn btn-secondary" @onclick="Cancel">@CancelText</button>
+                <button class="btn btn-@ConfirmButtonType" @onclick="Confirm">@ConfirmText</button>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public bool IsOpen { get; set; }
+
+    [Parameter]
+    public string Title { get; set; } = "Confirm";
+
+    [Parameter]
+    public string Message { get; set; } = "Are you sure?";
+
+    [Parameter]
+    public string ConfirmText { get; set; } = "Confirm";
+
+    [Parameter]
+    public string CancelText { get; set; } = "Cancel";
+
+    [Parameter]
+    public string ConfirmButtonType { get; set; } = "primary";
+
+    [Parameter]
+    public EventCallback<bool> OnClose { get; set; }
+
+    private async Task Confirm()
+    {
+        await OnClose.InvokeAsync(true);
+    }
+
+    private async Task Cancel()
+    {
+        await OnClose.InvokeAsync(false);
+    }
+
+    private async Task HandleKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Escape")
+        {
+            await Cancel();
+        }
+    }
+}

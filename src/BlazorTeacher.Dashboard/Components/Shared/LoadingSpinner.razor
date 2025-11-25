@@ -1,0 +1,30 @@
+@* 
+    LoadingSpinner.razor
+    A reusable loading indicator component.
+    Demonstrates:
+    - Simple reusable component
+    - CSS isolation
+    - Parameters for customization
+*@
+
+<div class="loading-spinner @Size">
+    <div class="spinner"></div>
+    @if (!string.IsNullOrEmpty(Message))
+    {
+        <p class="loading-message">@Message</p>
+    }
+</div>
+
+@code {
+    /// <summary>
+    /// Optional message to display below the spinner.
+    /// </summary>
+    [Parameter]
+    public string? Message { get; set; }
+
+    /// <summary>
+    /// Size of the spinner: "small", "medium", or "large".
+    /// </summary>
+    [Parameter]
+    public string Size { get; set; } = "medium";
+}

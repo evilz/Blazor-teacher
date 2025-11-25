@@ -1,0 +1,557 @@
+@page "/tutorial/components"
+
+<PageTitle>Blazor Components Tutorial</PageTitle>
+
+<div class="tutorial-page">
+    <h1>⚡ Blazor Components Deep Dive</h1>
+    <p class="subtitle">Master Blazor's component model, directives, events, and lifecycle</p>
+
+    <nav class="table-of-contents">
+        <h3>Table of Contents</h3>
+        <ul>
+            <li><a href="#overview">Components Overview</a></li>
+            <li><a href="#directives">Directives</a></li>
+            <li><a href="#events">Event Handling</a></li>
+            <li><a href="#lifecycle">Component Lifecycle</a></li>
+            <li><a href="#rendering">Rendering Modes</a></li>
+            <li><a href="#reusable">Creating Reusable Components</a></li>
+        </ul>
+    </nav>
+
+    <section id="overview" class="tutorial-section">
+        <h2>1. Components Overview</h2>
+        <p>Blazor components are the fundamental building blocks of a Blazor application. Each component is a self-contained piece of UI with its own logic and styling.</p>
+        
+        <div class="code-block">
+            <div class="code-header">CourseCard.razor - Basic Component Structure</div>
+            <pre><code>@@* This is a Razor comment *@@
+
+@@* HTML markup with Razor syntax *@@
+&lt;div class="course-card"&gt;
+    &lt;h3&gt;@@Course.Title&lt;/h3&gt;
+    &lt;p&gt;@@Course.Description&lt;/p&gt;
+    &lt;span&gt;$@@Course.Price.ToString("F2")&lt;/span&gt;
+&lt;/div&gt;
+
+@@code {
+    // C# code block
+    [Parameter]
+    public CourseDto Course { get; set; } = null!;
+    
+    // Component logic goes here
+}</code></pre>
+        </div>
+
+        <div class="info-box">
+            <strong>📦 Component Anatomy:</strong>
+            <ul>
+                <li><strong>Markup section:</strong> HTML with Razor syntax for dynamic content</li>
+                <li><strong>@@code block:</strong> C# code for component logic</li>
+                <li><strong>Parameters:</strong> Properties decorated with [Parameter] for passing data</li>
+                <li><strong>CSS file:</strong> Optional isolated styles (ComponentName.razor.css)</li>
+            </ul>
+        </div>
+    </section>
+
+    <section id="directives" class="tutorial-section">
+        <h2>2. Blazor Directives</h2>
+        <p>Directives are special instructions that tell Blazor how to handle components and elements.</p>
+        
+        <div class="directive-grid">
+            <div class="directive-card">
+                <h4>@@page</h4>
+                <p>Defines a route for the component</p>
+                <code>@@page "/courses"</code>
+            </div>
+            
+            <div class="directive-card">
+                <h4>@@inject</h4>
+                <p>Injects a service via dependency injection</p>
+                <code>@@inject CourseService Service</code>
+            </div>
+            
+            <div class="directive-card">
+                <h4>@@implements</h4>
+                <p>Implements an interface</p>
+                <code>@@implements IDisposable</code>
+            </div>
+            
+            <div class="directive-card">
+                <h4>@@inherits</h4>
+                <p>Inherits from a base class</p>
+                <code>@@inherits ComponentBase</code>
+            </div>
+            
+            <div class="directive-card">
+                <h4>@@rendermode</h4>
+                <p>Sets the component's render mode</p>
+                <code>@@rendermode InteractiveServer</code>
+            </div>
+            
+            <div class="directive-card">
+                <h4>@@attribute</h4>
+                <p>Applies an attribute to the component</p>
+                <code>@@attribute [Authorize]</code>
+            </div>
+        </div>
+
+        <h3>Conditional Rendering</h3>
+        <div class="code-block">
+            <div class="code-header">Conditional & Loop Directives</div>
+            <pre><code>@@* Conditional rendering *@@
+@@if (isLoading)
+{
+    &lt;LoadingSpinner /&gt;
+}
+else if (courses.Any())
+{
+    @@foreach (var course in courses)
+    {
+        &lt;CourseCard Course="course" /&gt;
+    }
+}
+else
+{
+    &lt;p&gt;No courses found&lt;/p&gt;
+}
+
+@@* Switch expression *@@
+@@switch (status)
+{
+    case "success":
+        &lt;span class="success"&gt;✓&lt;/span&gt;
+        break;
+    case "error":
+        &lt;span class="error"&gt;✗&lt;/span&gt;
+        break;
+}</code></pre>
+        </div>
+    </section>
+
+    <section id="events" class="tutorial-section">
+        <h2>3. Event Handling</h2>
+        <p>Blazor provides a rich event system for handling user interactions.</p>
+        
+        <div class="code-block">
+            <div class="code-header">Event Handling Examples</div>
+            <pre><code>@@* Click events *@@
+&lt;button @@onclick="HandleClick"&gt;Click Me&lt;/button&gt;
+&lt;button @@onclick="() =&gt; HandleClickWithParam(course.Id)"&gt;Delete&lt;/button&gt;
+&lt;button @@onclick="@@(e =&gt; HandleClickWithArgs(e))"&gt;With Event Args&lt;/button&gt;
+
+@@* Keyboard events *@@
+&lt;input @@onkeyup="HandleKeyUp" /&gt;
+&lt;input @@onkeydown="@@(e =&gt; { if(e.Key == "Enter") Submit(); })" /&gt;
+
+@@* Form events *@@
+&lt;input @@oninput="HandleInput" /&gt;
+&lt;input @@onchange="HandleChange" /&gt;
+
+@@* Mouse events *@@
+&lt;div @@onmouseover="ShowTooltip" @@onmouseout="HideTooltip"&gt;&lt;/div&gt;
+
+@@* Prevent default and stop propagation *@@
+&lt;a href="/link" @@onclick="HandleClick" @@onclick:preventDefault&gt;No Navigation&lt;/a&gt;
+&lt;div @@onclick="ParentClick"&gt;
+    &lt;button @@onclick="ChildClick" @@onclick:stopPropagation&gt;Click&lt;/button&gt;
+&lt;/div&gt;
+
+@@code {
+    private void HandleClick() { }
+    private void HandleClickWithParam(int id) { }
+    private void HandleClickWithArgs(MouseEventArgs e) { }
+    private async Task HandleKeyUp(KeyboardEventArgs e) 
+    { 
+        if (e.Key == "Enter") await Search();
+    }
+}</code></pre>
+        </div>
+
+        <h3>Two-Way Binding</h3>
+        <div class="code-block">
+            <div class="code-header">@@bind Directive</div>
+            <pre><code>@@* Basic binding *@@
+&lt;input @@bind="searchTerm" /&gt;
+
+@@* Bind on specific event *@@
+&lt;input @@bind="searchTerm" @@bind:event="oninput" /&gt;
+
+@@* Bind with format *@@
+&lt;input @@bind="birthDate" @@bind:format="yyyy-MM-dd" /&gt;
+
+@@* Checkbox binding *@@
+&lt;input type="checkbox" @@bind="isPublished" /&gt;
+
+@@* Select binding *@@
+&lt;select @@bind="selectedLevel"&gt;
+    @@foreach (var level in Enum.GetValues&lt;CourseLevel&gt;())
+    {
+        &lt;option value="@@level"&gt;@@level&lt;/option&gt;
+    }
+&lt;/select&gt;</code></pre>
+        </div>
+    </section>
+
+    <section id="lifecycle" class="tutorial-section">
+        <h2>4. Component Lifecycle</h2>
+        <p>Understanding the lifecycle is crucial for proper component behavior.</p>
+        
+        <div class="lifecycle-diagram">
+            <div class="lifecycle-step">
+                <span class="step-number">1</span>
+                <h4>SetParametersAsync</h4>
+                <p>Parameters received</p>
+            </div>
+            <div class="lifecycle-arrow">→</div>
+            <div class="lifecycle-step">
+                <span class="step-number">2</span>
+                <h4>OnInitialized(Async)</h4>
+                <p>Component initialized</p>
+            </div>
+            <div class="lifecycle-arrow">→</div>
+            <div class="lifecycle-step">
+                <span class="step-number">3</span>
+                <h4>OnParametersSet(Async)</h4>
+                <p>Parameters set/changed</p>
+            </div>
+            <div class="lifecycle-arrow">→</div>
+            <div class="lifecycle-step">
+                <span class="step-number">4</span>
+                <h4>OnAfterRender(Async)</h4>
+                <p>After DOM update</p>
+            </div>
+        </div>
+
+        <div class="code-block">
+            <div class="code-header">Lifecycle Methods Example</div>
+            <pre><code>@@implements IDisposable
+
+@@code {
+    // Called once when component initializes
+    protected override void OnInitialized()
+    {
+        // Sync initialization
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Async initialization - load data here
+        courses = await CourseService.GetCoursesAsync();
+    }
+
+    // Called when parameters change
+    protected override void OnParametersSet()
+    {
+        // React to parameter changes
+    }
+
+    // Called after each render
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            // JavaScript interop safe here
+        }
+    }
+
+    // Cleanup
+    public void Dispose()
+    {
+        // Unsubscribe from events, dispose resources
+    }
+}</code></pre>
+        </div>
+
+        <a href="/lifecycle" class="btn btn-secondary">🔄 Try Interactive Lifecycle Demo</a>
+    </section>
+
+    <section id="rendering" class="tutorial-section">
+        <h2>5. Rendering Modes in .NET 10</h2>
+        <p>.NET 10 Blazor introduces unified render modes for flexible deployment:</p>
+        
+        <div class="render-mode-grid">
+            <div class="render-mode-card">
+                <h4>Static SSR</h4>
+                <p>Pre-rendered HTML, no interactivity. Best for SEO-focused pages.</p>
+                <code>@@rendermode @(new InteractiveServerRenderMode(prerender: true))</code>
+            </div>
+            
+            <div class="render-mode-card highlight">
+                <h4>Interactive Server</h4>
+                <p>Real-time SignalR connection. Great for internal apps.</p>
+                <code>@@rendermode InteractiveServer</code>
+            </div>
+            
+            <div class="render-mode-card">
+                <h4>Interactive WebAssembly</h4>
+                <p>Runs in browser via WASM. Works offline.</p>
+                <code>@@rendermode InteractiveWebAssembly</code>
+            </div>
+            
+            <div class="render-mode-card">
+                <h4>Auto</h4>
+                <p>Starts with Server, switches to WASM after download.</p>
+                <code>@@rendermode InteractiveAuto</code>
+            </div>
+        </div>
+    </section>
+
+    <section id="reusable" class="tutorial-section">
+        <h2>6. Creating Reusable Components</h2>
+        <p>Build a library of reusable components for consistent UI:</p>
+        
+        <div class="code-block">
+            <div class="code-header">LoadingSpinner.razor</div>
+            <pre><code>&lt;div class="loading-spinner @@Size"&gt;
+    &lt;div class="spinner"&gt;&lt;/div&gt;
+    @@if (!string.IsNullOrEmpty(Message))
+    {
+        &lt;p&gt;@@Message&lt;/p&gt;
+    }
+&lt;/div&gt;
+
+@@code {
+    [Parameter]
+    public string? Message { get; set; }
+
+    [Parameter]
+    public string Size { get; set; } = "medium";
+}</code></pre>
+        </div>
+
+        <div class="code-block">
+            <div class="code-header">Using the Component</div>
+            <pre><code>@@if (isLoading)
+{
+    &lt;LoadingSpinner Message="Loading courses..." Size="large" /&gt;
+}
+else
+{
+    &lt;CourseList Courses="courses" /&gt;
+}</code></pre>
+        </div>
+    </section>
+
+    <div class="next-steps">
+        <h3>🎯 Next Steps</h3>
+        <p>Learn about component communication, cascading parameters, and state management!</p>
+        <a href="/tutorial/state" class="btn btn-primary">Continue to State Management →</a>
+    </div>
+</div>
+
+<style>
+    .tutorial-page {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 2rem;
+        line-height: 1.7;
+    }
+
+    .tutorial-page h1 { margin-bottom: 0.5rem; }
+    .subtitle { color: #666; font-size: 1.1rem; margin-bottom: 2rem; }
+
+    .table-of-contents {
+        background: #f8f9fa;
+        padding: 1.5rem;
+        border-radius: 8px;
+        margin-bottom: 2rem;
+    }
+
+    .table-of-contents h3 { margin: 0 0 1rem 0; }
+    .table-of-contents ul { margin: 0; padding-left: 1.5rem; }
+    .table-of-contents li { margin: 0.5rem 0; }
+    .table-of-contents a { color: #3498db; text-decoration: none; }
+
+    .tutorial-section {
+        margin-bottom: 3rem;
+        padding-top: 1rem;
+        border-top: 1px solid #eee;
+    }
+
+    .code-block {
+        background: #1e1e1e;
+        border-radius: 8px;
+        overflow: hidden;
+        margin: 1rem 0;
+    }
+
+    .code-header {
+        background: #333;
+        color: #aaa;
+        padding: 0.5rem 1rem;
+        font-size: 0.85rem;
+    }
+
+    .code-block pre {
+        margin: 0;
+        padding: 1rem;
+        overflow-x: auto;
+    }
+
+    .code-block code {
+        color: #d4d4d4;
+        font-family: 'Consolas', monospace;
+        font-size: 0.9rem;
+    }
+
+    .directive-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin: 1rem 0;
+    }
+
+    .directive-card {
+        background: #f8f9fa;
+        padding: 1rem;
+        border-radius: 8px;
+        border-left: 4px solid #3498db;
+    }
+
+    .directive-card h4 {
+        margin: 0 0 0.5rem 0;
+        color: #3498db;
+        font-family: monospace;
+    }
+
+    .directive-card p {
+        margin: 0 0 0.5rem 0;
+        font-size: 0.9rem;
+        color: #666;
+    }
+
+    .directive-card code {
+        font-size: 0.8rem;
+        background: #e8e8e8;
+        padding: 0.2rem 0.4rem;
+        border-radius: 4px;
+    }
+
+    .lifecycle-diagram {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin: 1.5rem 0;
+        padding: 1rem;
+        background: #f8f9fa;
+        border-radius: 8px;
+    }
+
+    .lifecycle-step {
+        background: white;
+        padding: 1rem;
+        border-radius: 8px;
+        text-align: center;
+        flex: 1;
+        min-width: 150px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .step-number {
+        display: inline-block;
+        width: 24px;
+        height: 24px;
+        background: #3498db;
+        color: white;
+        border-radius: 50%;
+        font-size: 0.8rem;
+        line-height: 24px;
+    }
+
+    .lifecycle-step h4 {
+        margin: 0.5rem 0 0.25rem 0;
+        font-size: 0.9rem;
+    }
+
+    .lifecycle-step p {
+        margin: 0;
+        font-size: 0.8rem;
+        color: #666;
+    }
+
+    .lifecycle-arrow {
+        font-size: 1.5rem;
+        color: #3498db;
+    }
+
+    .render-mode-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin: 1rem 0;
+    }
+
+    .render-mode-card {
+        background: #f8f9fa;
+        padding: 1rem;
+        border-radius: 8px;
+    }
+
+    .render-mode-card.highlight {
+        background: #e3f2fd;
+        border: 2px solid #2196f3;
+    }
+
+    .render-mode-card h4 {
+        margin: 0 0 0.5rem 0;
+    }
+
+    .render-mode-card p {
+        font-size: 0.9rem;
+        color: #666;
+        margin: 0 0 0.5rem 0;
+    }
+
+    .render-mode-card code {
+        font-size: 0.75rem;
+        background: #e8e8e8;
+        padding: 0.2rem;
+        border-radius: 4px;
+        display: block;
+    }
+
+    .info-box {
+        background: #e3f2fd;
+        border-left: 4px solid #2196f3;
+        padding: 1rem;
+        margin: 1rem 0;
+        border-radius: 0 8px 8px 0;
+    }
+
+    .info-box ul {
+        margin: 0.5rem 0 0 1.5rem;
+        padding: 0;
+    }
+
+    .next-steps {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 2rem;
+        border-radius: 12px;
+        text-align: center;
+    }
+
+    .next-steps h3 { margin: 0 0 1rem 0; }
+    .next-steps p { margin: 0 0 1.5rem 0; opacity: 0.9; }
+
+    .btn {
+        display: inline-block;
+        padding: 0.75rem 1.5rem;
+        border-radius: 6px;
+        text-decoration: none;
+        font-weight: 500;
+    }
+
+    .btn-primary {
+        background: white;
+        color: #667eea;
+    }
+
+    .btn-secondary {
+        background: #3498db;
+        color: white;
+        border: none;
+        cursor: pointer;
+    }
+</style>

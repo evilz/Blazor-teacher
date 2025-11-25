@@ -1,0 +1,67 @@
+@* 
+    CourseList.razor
+    A component for displaying a list of courses.
+    Demonstrates:
+    - Component composition (using child components)
+    - Virtualization for performance
+    - Event handling and propagation
+*@
+
+@if (IsLoading)
+{
+    <LoadingSpinner Message="Loading courses..." />
+}
+else if (Courses == null || !Courses.Any())
+{
+    <div class="empty-state">
+        <span class="empty-icon">📚</span>
+        <h3>No courses found</h3>
+        <p>@(string.IsNullOrEmpty(SearchTerm) ? "Create your first course to get started." : "Try adjusting your search criteria.")</p>
+    </div>
+}
+else
+{
+    <div class="course-list">
+        @foreach (var course in Courses)
+        {
+            <CourseCard 
+                Course="course"
+                OnView="HandleView"
+                OnEdit="HandleEdit"
+                OnDelete="HandleDelete" />
+        }
+    </div>
+}
+
+@code {
+    /// <summary>
+    /// List of courses to display.
+    /// </summary>
+    [Parameter]
+    public IEnumerable<CourseDto>? Courses { get; set; }
+
+    /// <summary>
+    /// Whether courses are being loaded.
+    /// </summary>
+    [Parameter]
+    public bool IsLoading { get; set; }
+
+    /// <summary>
+    /// Current search term for empty state message.
+    /// </summary>
+    [Parameter]
+    public string? SearchTerm { get; set; }
+
+    [Parameter]
+    public EventCallback<CourseDto> OnView { get; set; }
+
+    [Parameter]
+    public EventCallback<CourseDto> OnEdit { get; set; }
+
+    [Parameter]
+    public EventCallback<CourseDto> OnDelete { get; set; }
+
+    private async Task HandleView(CourseDto course) => await OnView.InvokeAsync(course);
+    private async Task HandleEdit(CourseDto course) => await OnEdit.InvokeAsync(course);
+    private async Task HandleDelete(CourseDto course) => await OnDelete.InvokeAsync(course);
+}
