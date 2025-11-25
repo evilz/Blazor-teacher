@@ -18,7 +18,7 @@ builder.Services.AddHttpClient<CourseService>(client =>
 builder.Services.AddScoped<AppState>();
 
 // Register chapter service for tutorial progress tracking
-builder.Services.AddScoped<ChapterService>();
+builder.Services.AddSingleton<ChapterService>();
 
 var app = builder.Build();
 

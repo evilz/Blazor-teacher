@@ -1,0 +1,519 @@
+@page "/tutorial/chapter/{Id:int}"
+@using BlazorTeacher.Shared.Models
+@rendermode InteractiveServer
+@inject ChapterService ChapterService
+@inject NavigationManager NavigationManager
+
+<PageTitle>@currentChapter?.Title — Tutorial</PageTitle>
+
+<div class="chapter-viewer">
+    @if (currentChapter == null)
+    {
+        <div class="loading">Loading chapter...</div>
+    }
+    else
+    {
+        <div class="viewer-header">
+            <button class="btn-back" @onclick="GoBack">← Back to Outline</button>
+            <div class="chapter-info">
+                <span class="chapter-number">Chapter @currentChapter.Number</span>
+                <h1>@currentChapter.Title</h1>
+            </div>
+            <div class="progress-indicator">
+                <div class="progress-bar" style="width: @progress?.ProgressPercentage%"></div>
+            </div>
+        </div>
+
+        <div class="viewer-content">
+            @if (showQuiz)
+            {
+                <div class="quiz-section">
+                    <h2>🧠 Knowledge Check</h2>
+                    <p>Answer the following questions to complete this chapter.</p>
+                    
+                    @if (currentChapter.Quiz != null)
+                    {
+                        <div class="quiz-container">
+                            @foreach (var (question, index) in currentChapter.Quiz.Questions.Select((q, i) => (q, i)))
+                            {
+                                <div class="quiz-question">
+                                    <h3>@(index + 1). @question.Text</h3>
+                                    <div class="options">
+                                        @foreach (var (option, optIndex) in question.Options.Select((o, i) => (o, i)))
+                                        {
+                                            <button class="btn-option @GetOptionClass(index, optIndex)" 
+                                                    @onclick="() => SelectOption(index, optIndex)"
+                                                    disabled="@quizSubmitted">
+                                                @option
+                                            </button>
+                                        }
+                                    </div>
+                                    @if (quizSubmitted)
+                                    {
+                                        <div class="explanation @(selectedOptions[index] == question.CorrectOptionIndex ? "correct" : "incorrect")">
+                                            @if (selectedOptions[index] == question.CorrectOptionIndex)
+                                            {
+                                                <strong>✅ Correct!</strong>
+                                            }
+                                            else
+                                            {
+                                                <strong>❌ Incorrect.</strong>
+                                            }
+                                            @question.Explanation
+                                        </div>
+                                    }
+                                </div>
+                            }
+                            
+                            <div class="quiz-actions">
+                                @if (!quizSubmitted)
+                                {
+                                    <button class="btn-primary" @onclick="SubmitQuiz" disabled="@(!AllQuestionsAnswered)">Submit Answers</button>
+                                }
+                                else
+                                {
+                                    @if (quizPassed)
+                                    {
+                                        <button class="btn-success" @onclick="CompleteChapter">🎉 Finish Chapter</button>
+                                    }
+                                    else
+                                    {
+                                        <button class="btn-retry" @onclick="RetryQuiz">Retry Quiz</button>
+                                    }
+                                }
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <p>No quiz available for this chapter.</p>
+                        <button class="btn-primary" @onclick="CompleteChapter">Finish Chapter</button>
+                    }
+                </div>
+            }
+            else if (currentChapter.Steps.Any())
+            {
+                var step = currentChapter.Steps[currentStepIndex];
+                
+                <div class="step-container">
+                    <div class="step-header">
+                        <span class="step-counter">Step @(currentStepIndex + 1) of @currentChapter.Steps.Count</span>
+                        <h2>@step.Title</h2>
+                    </div>
+                    
+                    <div class="step-content">
+                        @* In a real app, use a Markdown renderer here *@
+                        @((MarkupString)RenderMarkdown(step.Content))
+                    </div>
+                    
+                    <div class="step-actions">
+                        <button class="btn-secondary" @onclick="PreviousStep" disabled="@(currentStepIndex == 0)">Previous</button>
+                        
+                        @if (currentStepIndex < currentChapter.Steps.Count - 1)
+                        {
+                            <button class="btn-primary" @onclick="NextStep">Next Step →</button>
+                        }
+                        else
+                        {
+                            <button class="btn-primary" @onclick="StartQuiz">Take Quiz →</button>
+                        }
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="empty-state">
+                    <p>This chapter has no interactive steps yet.</p>
+                    <button class="btn-primary" @onclick="CompleteChapter">Mark as Complete</button>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private Chapter? currentChapter;
+    private ChapterProgress? progress;
+    private int currentStepIndex;
+    private bool showQuiz;
+    
+    // Quiz state
+    private Dictionary<int, int> selectedOptions = new();
+    private bool quizSubmitted;
+    private bool quizPassed;
+
+    protected override void OnInitialized()
+    {
+        currentChapter = ChapterService.GetAllChapters().FirstOrDefault(c => c.Id == Id);
+        if (currentChapter != null)
+        {
+            progress = ChapterService.GetProgress(Id);
+            currentStepIndex = progress.CurrentStepIndex;
+            
+            // If already completed, user can review, but let's start at 0 or saved index
+            if (currentStepIndex >= currentChapter.Steps.Count && currentChapter.Steps.Any())
+            {
+                currentStepIndex = 0; // Reset for review
+            }
+        }
+    }
+
+    private void PreviousStep()
+    {
+        if (currentStepIndex > 0)
+        {
+            currentStepIndex--;
+            StateHasChanged();
+        }
+    }
+
+    private void NextStep()
+    {
+        if (currentChapter != null && currentStepIndex < currentChapter.Steps.Count - 1)
+        {
+            ChapterService.CompleteStep(Id, currentStepIndex);
+            currentStepIndex++;
+            progress = ChapterService.GetProgress(Id); // Refresh progress
+            StateHasChanged();
+        }
+    }
+
+    private void StartQuiz()
+    {
+        // Mark last step as done
+        ChapterService.CompleteStep(Id, currentStepIndex);
+        showQuiz = true;
+    }
+
+    private void SelectOption(int questionIndex, int optionIndex)
+    {
+        if (!quizSubmitted)
+        {
+            selectedOptions[questionIndex] = optionIndex;
+        }
+    }
+
+    private bool AllQuestionsAnswered => 
+        currentChapter?.Quiz != null && selectedOptions.Count == currentChapter.Quiz.Questions.Count;
+
+    private void SubmitQuiz()
+    {
+        quizSubmitted = true;
+        
+        // Check if all correct
+        if (currentChapter?.Quiz != null)
+        {
+            int correctCount = 0;
+            for (int i = 0; i < currentChapter.Quiz.Questions.Count; i++)
+            {
+                if (selectedOptions.TryGetValue(i, out int selected) && 
+                    selected == currentChapter.Quiz.Questions[i].CorrectOptionIndex)
+                {
+                    correctCount++;
+                }
+            }
+            
+            // Simple pass logic: 100% correct required (can be relaxed)
+            quizPassed = correctCount == currentChapter.Quiz.Questions.Count;
+        }
+        else
+        {
+            quizPassed = true;
+        }
+    }
+
+    private void RetryQuiz()
+    {
+        quizSubmitted = false;
+        quizPassed = false;
+        selectedOptions.Clear();
+    }
+
+    private void CompleteChapter()
+    {
+        ChapterService.CompleteChapter(Id);
+        GoBack();
+    }
+
+    private void GoBack()
+    {
+        NavigationManager.NavigateTo("/tutorial/outline");
+    }
+
+    private string GetOptionClass(int qIndex, int optIndex)
+    {
+        if (!selectedOptions.TryGetValue(qIndex, out int selected))
+            return "";
+            
+        if (quizSubmitted)
+        {
+            var question = currentChapter?.Quiz?.Questions[qIndex];
+            if (question == null) return "";
+
+            if (optIndex == question.CorrectOptionIndex) return "correct";
+            if (selected == optIndex && selected != question.CorrectOptionIndex) return "wrong";
+            return "dimmed";
+        }
+        
+        return selected == optIndex ? "selected" : "";
+    }
+    
+    // Simple markdown renderer helper (replace with real one if available)
+    private string RenderMarkdown(string markdown)
+    {
+        // Very basic replacement for demo purposes
+        var html = markdown
+            .Replace("\n", "<br>")
+            .Replace("**", "<strong>") // Note: this is fragile, real parser needed
+            .Replace("`", "<code>");
+            
+        // Fix closing tags (hacky)
+        // A real implementation would use Markdig or similar
+        return html; 
+    }
+}
+
+<style>
+    .chapter-viewer {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 2rem;
+        font-family: 'Segoe UI', system-ui, sans-serif;
+    }
+
+    .viewer-header {
+        margin-bottom: 2rem;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 1rem;
+    }
+
+    .btn-back {
+        background: none;
+        border: none;
+        color: #666;
+        cursor: pointer;
+        padding: 0;
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+    }
+    
+    .btn-back:hover {
+        color: #333;
+        text-decoration: underline;
+    }
+
+    .chapter-info h1 {
+        margin: 0.5rem 0;
+        font-size: 2rem;
+        color: #2c3e50;
+    }
+
+    .chapter-number {
+        text-transform: uppercase;
+        font-size: 0.8rem;
+        letter-spacing: 1px;
+        color: #7f8c8d;
+        font-weight: bold;
+    }
+
+    .progress-indicator {
+        height: 4px;
+        background: #f0f0f0;
+        margin-top: 1rem;
+        border-radius: 2px;
+        overflow: hidden;
+    }
+
+    .progress-bar {
+        height: 100%;
+        background: #3498db;
+        transition: width 0.3s ease;
+    }
+
+    .step-container {
+        animation: fadeIn 0.3s ease;
+    }
+
+    .step-header {
+        margin-bottom: 1.5rem;
+    }
+
+    .step-counter {
+        font-size: 0.85rem;
+        color: #95a5a6;
+        font-weight: 500;
+    }
+
+    .step-header h2 {
+        margin: 0.5rem 0 0;
+        font-size: 1.5rem;
+        color: #34495e;
+    }
+
+    .step-content {
+        font-size: 1.1rem;
+        line-height: 1.7;
+        color: #2c3e50;
+        margin-bottom: 3rem;
+        background: #fff;
+        padding: 2rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+    }
+    
+    .step-content code {
+        background: #f8f9fa;
+        padding: 0.2rem 0.4rem;
+        border-radius: 4px;
+        font-family: monospace;
+        color: #e74c3c;
+    }
+
+    .step-actions {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 2rem;
+    }
+
+    .btn-primary, .btn-secondary, .btn-success, .btn-retry {
+        padding: 0.75rem 1.5rem;
+        border-radius: 6px;
+        font-weight: 600;
+        cursor: pointer;
+        border: none;
+        transition: all 0.2s;
+    }
+
+    .btn-primary {
+        background: #3498db;
+        color: white;
+    }
+    
+    .btn-primary:hover:not(:disabled) {
+        background: #2980b9;
+        transform: translateY(-1px);
+    }
+    
+    .btn-primary:disabled {
+        background: #bdc3c7;
+        cursor: not-allowed;
+    }
+
+    .btn-secondary {
+        background: #ecf0f1;
+        color: #7f8c8d;
+    }
+    
+    .btn-secondary:hover:not(:disabled) {
+        background: #bdc3c7;
+        color: #2c3e50;
+    }
+    
+    .btn-secondary:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+    
+    .btn-success {
+        background: #27ae60;
+        color: white;
+    }
+    
+    .btn-success:hover {
+        background: #219150;
+    }
+    
+    .btn-retry {
+        background: #f39c12;
+        color: white;
+    }
+
+    .quiz-section {
+        background: #fff;
+        padding: 2rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    }
+    
+    .quiz-question {
+        margin-bottom: 2rem;
+        padding-bottom: 2rem;
+        border-bottom: 1px solid #f0f0f0;
+    }
+    
+    .quiz-question:last-child {
+        border-bottom: none;
+    }
+    
+    .quiz-question h3 {
+        font-size: 1.1rem;
+        margin-bottom: 1rem;
+    }
+    
+    .options {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .btn-option {
+        text-align: left;
+        padding: 1rem;
+        background: #f8f9fa;
+        border: 2px solid transparent;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.2s;
+        font-size: 1rem;
+    }
+    
+    .btn-option:hover:not(:disabled) {
+        background: #e9ecef;
+    }
+    
+    .btn-option.selected {
+        border-color: #3498db;
+        background: #ebf5fb;
+        color: #2980b9;
+    }
+    
+    .btn-option.correct {
+        border-color: #27ae60;
+        background: #eafaf1;
+        color: #27ae60;
+    }
+    
+    .btn-option.wrong {
+        border-color: #e74c3c;
+        background: #fdedec;
+        color: #c0392b;
+    }
+    
+    .btn-option.dimmed {
+        opacity: 0.6;
+    }
+    
+    .explanation {
+        margin-top: 1rem;
+        padding: 1rem;
+        border-radius: 6px;
+        background: #f8f9fa;
+        font-size: 0.95rem;
+    }
+    
+    .explanation.correct {
+        border-left: 4px solid #27ae60;
+    }
+    
+    .explanation.incorrect {
+        border-left: 4px solid #e74c3c;
+    }
+    
+    @@keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+</style>

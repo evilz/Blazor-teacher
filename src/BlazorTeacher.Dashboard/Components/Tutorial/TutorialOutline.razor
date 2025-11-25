@@ -41,6 +41,8 @@
                     {
                         var progress = ChapterService.GetProgress(chapter.Id);
                         var stateClass = ChapterService.GetStateClass(progress.State);
+                        var isLocked = IsChapterLocked(chapter);
+                        if (isLocked) stateClass += " locked";
                         
                         <div class="chapter-card @stateClass">
                             <div class="chapter-header">
@@ -51,20 +53,29 @@
                                     Chapter @chapter.Number
                                 </div>
                                 <div class="chapter-actions">
-                                    @if (progress.State == LearningState.NotStarted)
+                                    @if (IsChapterLocked(chapter))
                                     {
-                                        <button class="btn-action btn-start" @onclick="() => StartChapter(chapter.Id)">
+                                        <button class="btn-action btn-locked" disabled>
+                                            🔒 Locked
+                                        </button>
+                                    }
+                                    else if (progress.State == LearningState.NotStarted)
+                                    {
+                                        <button class="btn-action btn-start" @onclick="() => OpenChapter(chapter.Id)">
                                             Start
                                         </button>
                                     }
                                     else if (progress.State == LearningState.InProgress)
                                     {
-                                        <button class="btn-action btn-complete" @onclick="() => CompleteChapter(chapter.Id)">
-                                            Complete
+                                        <button class="btn-action btn-continue" @onclick="() => OpenChapter(chapter.Id)">
+                                            Continue
                                         </button>
                                     }
                                     else
                                     {
+                                        <button class="btn-action btn-review" @onclick="() => OpenChapter(chapter.Id)">
+                                            Review
+                                        </button>
                                         <button class="btn-action btn-reset-small" @onclick="() => ResetChapter(chapter.Id)">
                                             Reset
                                         </button>
@@ -138,7 +149,7 @@
         <h3>🎯 Ready to Start?</h3>
         <p>Begin your journey with Chapter 1 and work your way through the complete tutorial!</p>
         <div class="footer-actions">
-            <a href="/tutorial/api" class="btn btn-primary">Start with API Tutorial →</a>
+            <a href="/tutorial/chapter/1" class="btn btn-primary">Start with Chapter 1 →</a>
             <a href="/" class="btn btn-secondary">← Back to Home</a>
         </div>
     </div>
@@ -155,6 +166,25 @@
         LoadData();
         ChapterService.OnProgressChanged += HandleProgressChanged;
     }
+    
+    @inject NavigationManager NavigationManager
+
+    private bool IsChapterLocked(Chapter chapter)
+    {
+        if (chapter.Number == 1) return false;
+        
+        // Find previous chapter
+        var prevChapter = ChapterService.GetAllChapters().FirstOrDefault(c => c.Number == chapter.Number - 1);
+        if (prevChapter == null) return false;
+        
+        var prevProgress = ChapterService.GetProgress(prevChapter.Id);
+        return prevProgress.State != LearningState.Completed;
+    }
+
+    private void OpenChapter(int chapterId)
+    {
+        NavigationManager.NavigateTo($"/tutorial/chapter/{chapterId}");
+    }
 
     private void LoadData()
     {
@@ -168,11 +198,6 @@
     {
         LoadData();
         StateHasChanged();
-    }
-
-    private void StartChapter(int chapterId)
-    {
-        ChapterService.StartChapter(chapterId);
     }
 
     private void CompleteChapter(int chapterId)
@@ -318,6 +343,12 @@
         border-left-color: #27ae60;
         background: #f8fff8;
     }
+    
+    .chapter-card.locked {
+        opacity: 0.6;
+        background: #f9f9f9;
+        border-left-color: #ccc;
+    }
 
     .chapter-header {
         display: flex;
@@ -422,6 +453,30 @@
 
     .btn-reset-small:hover {
         background: #7f8c8d;
+    }
+    
+    .btn-continue {
+        background: #f39c12;
+        color: white;
+    }
+    
+    .btn-continue:hover {
+        background: #d35400;
+    }
+    
+    .btn-review {
+        background: #9b59b6;
+        color: white;
+    }
+    
+    .btn-review:hover {
+        background: #8e44ad;
+    }
+    
+    .btn-locked {
+        background: #bdc3c7;
+        color: #7f8c8d;
+        cursor: not-allowed;
     }
 
     .chapter-progress {

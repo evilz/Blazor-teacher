@@ -20,6 +20,10 @@ public class Chapter
     public List<string> Topics { get; set; } = new();
     
     public List<string> KeyPoints { get; set; } = new();
+
+    public List<ChapterStep> Steps { get; set; } = new();
+
+    public Quiz? Quiz { get; set; }
 }
 
 /// <summary>
@@ -62,4 +66,6 @@ public class ChapterProgress
     public DateTime? CompletedAt { get; set; }
     
     public int ProgressPercentage { get; set; }
+
+    public int CurrentStepIndex { get; set; }
 }

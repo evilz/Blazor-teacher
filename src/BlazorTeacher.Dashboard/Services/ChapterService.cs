@@ -33,6 +33,47 @@ public class ChapterService
                     "Architecture overview (API → Data → Blazor)",
                     "Learning goals and structure",
                     "Naming and domain selection"
+                },
+                Steps = new List<ChapterStep>
+                {
+                    new ChapterStep 
+                    { 
+                        Title = "Welcome to the Course", 
+                        Content = "Welcome! In this course, we will build a complete **.NET 10** application from scratch. We'll start with a robust **Minimal API**, connect it to a **SQLite** database using **EF Core**, and then build a beautiful **Blazor Server** dashboard to manage the data. By the end, you'll have a production-ready full-stack architecture.",
+                        Type = StepType.Read
+                    },
+                    new ChapterStep 
+                    { 
+                        Title = "The Architecture", 
+                        Content = "We will use a **Clean Architecture** approach:\n\n1. **Domain**: The core entities and business logic (no dependencies).\n2. **Infrastructure**: Database access and external services.\n3. **Api**: The REST API layer.\n4. **Web**: The Blazor dashboard UI.\n\nThis separation ensures our code is maintainable and testable.",
+                        Type = StepType.Read
+                    },
+                    new ChapterStep 
+                    { 
+                        Title = "Prerequisites Check", 
+                        Content = "Before we begin, ensure you have the **.NET 10 SDK** installed. Open your terminal and run `dotnet --version`. If you see `10.0.xxx`, you are ready to go!",
+                        Type = StepType.Action
+                    }
+                },
+                Quiz = new Quiz
+                {
+                    Questions = new List<QuizQuestion>
+                    {
+                        new QuizQuestion
+                        {
+                            Text = "Which component will handle the database access?",
+                            Options = new List<string> { "Blazor Web", "Infrastructure Layer", "Domain Layer", "API Layer" },
+                            CorrectOptionIndex = 1,
+                            Explanation = "The Infrastructure layer is responsible for external concerns like database access (EF Core)."
+                        },
+                        new QuizQuestion
+                        {
+                            Text = "What type of API will we build?",
+                            Options = new List<string> { "gRPC", "SOAP", "Minimal API (REST)", "GraphQL" },
+                            CorrectOptionIndex = 2,
+                            Explanation = "We will use .NET's Minimal API features to build a lightweight and fast REST API."
+                        }
+                    }
                 }
             },
             
@@ -51,6 +92,40 @@ public class ChapterService
                     "SQLite tools",
                     "Browser & Blazor debugging tools",
                     "Optional: Postman / Thunder Client"
+                },
+                Steps = new List<ChapterStep>
+                {
+                    new ChapterStep
+                    {
+                        Title = "Install .NET 10 SDK",
+                        Content = "Download and install the **.NET 10 SDK** from the official Microsoft website. Verify the installation by running `dotnet --version` in your terminal.",
+                        Type = StepType.Action
+                    },
+                    new ChapterStep
+                    {
+                        Title = "Choose Your IDE",
+                        Content = "We recommend **Visual Studio 2022** (latest preview) or **VS Code** with the C# Dev Kit extension. **JetBrains Rider** is also a great choice.",
+                        Type = StepType.Read
+                    },
+                    new ChapterStep
+                    {
+                        Title = "Install SQLite Tools",
+                        Content = "We will use SQLite. You can install a GUI tool like **DB Browser for SQLite** or use the VS Code extension 'SQLite'.",
+                        Type = StepType.Action
+                    }
+                },
+                Quiz = new Quiz
+                {
+                    Questions = new List<QuizQuestion>
+                    {
+                        new QuizQuestion
+                        {
+                            Text = "Which command checks the installed .NET version?",
+                            Options = new List<string> { "dotnet check", "dotnet --version", "dotnet info", "dotnet sdk" },
+                            CorrectOptionIndex = 1,
+                            Explanation = "`dotnet --version` displays the installed SDK version."
+                        }
+                    }
                 }
             },
             new Chapter
@@ -65,6 +140,40 @@ public class ChapterService
                     "dotnet new sln",
                     "Projects: Api (REST), Domain (Entities, contracts), Infrastructure (EF Core, DB), Web (Blazor dashboard)",
                     "Reference linking across projects"
+                },
+                Steps = new List<ChapterStep>
+                {
+                    new ChapterStep
+                    {
+                        Title = "Create Solution",
+                        Content = "Run `dotnet new sln -n BlazorTeacher` to create an empty solution file.",
+                        Type = StepType.Action
+                    },
+                    new ChapterStep
+                    {
+                        Title = "Create Projects",
+                        Content = "Create the projects:\n\n1. `dotnet new classlib -n BlazorTeacher.Domain`\n2. `dotnet new classlib -n BlazorTeacher.Infrastructure`\n3. `dotnet new webapi -n BlazorTeacher.Api`\n4. `dotnet new blazor -n BlazorTeacher.Web`",
+                        Type = StepType.Action
+                    },
+                    new ChapterStep
+                    {
+                        Title = "Link Projects",
+                        Content = "Add references:\n- Api references Infrastructure & Domain\n- Infrastructure references Domain\n- Web references Domain (and Api client later)",
+                        Type = StepType.Read
+                    }
+                },
+                Quiz = new Quiz
+                {
+                    Questions = new List<QuizQuestion>
+                    {
+                        new QuizQuestion
+                        {
+                            Text = "Which project should have NO dependencies on others?",
+                            Options = new List<string> { "Api", "Infrastructure", "Domain", "Web" },
+                            CorrectOptionIndex = 2,
+                            Explanation = "The Domain layer is the core and should not depend on outer layers."
+                        }
+                    }
                 }
             },
             
@@ -83,7 +192,14 @@ public class ChapterService
                     "Routing",
                     "Dependency injection basics",
                     "Running and testing the endpoint"
-                }
+                },
+                Steps = new List<ChapterStep>
+                {
+                    new ChapterStep { Title = "Create Endpoint", Content = "In `Program.cs`, add `app.MapGet(\"/hello\", () => \"Hello World\");`.", Type = StepType.Action },
+                    new ChapterStep { Title = "Run API", Content = "Run `dotnet run` in the Api project folder.", Type = StepType.Action },
+                    new ChapterStep { Title = "Test", Content = "Open browser to `localhost:xxxx/hello`.", Type = StepType.Action }
+                },
+                Quiz = new Quiz { Questions = new List<QuizQuestion> { new QuizQuestion { Text = "What method creates a GET endpoint?", Options = new List<string> { "MapPost", "MapGet", "MapPut", "Get" }, CorrectOptionIndex = 1, Explanation = "MapGet creates a GET endpoint." } } }
             },
             new Chapter
             {
@@ -100,7 +216,14 @@ public class ChapterService
                     "Mapping principles",
                     "Validation basics",
                     "Separation of concerns (Domain vs API)"
-                }
+                },
+                Steps = new List<ChapterStep>
+                {
+                    new ChapterStep { Title = "Create Entity", Content = "Create `Course.cs` in Domain project.", Type = StepType.Action },
+                    new ChapterStep { Title = "Define Properties", Content = "Add `Id`, `Title`, `Price` properties.", Type = StepType.Action },
+                    new ChapterStep { Title = "Create DTO", Content = "Create `CourseDto.cs` for API responses.", Type = StepType.Action }
+                },
+                Quiz = new Quiz { Questions = new List<QuizQuestion> { new QuizQuestion { Text = "Where should entities live?", Options = new List<string> { "Api", "Infrastructure", "Domain", "Web" }, CorrectOptionIndex = 2, Explanation = "Entities belong in the Domain." } } }
             },
             new Chapter
             {
@@ -118,7 +241,14 @@ public class ChapterService
                     "Database creation",
                     "Connection strings",
                     "Dependency injection"
-                }
+                },
+                Steps = new List<ChapterStep>
+                {
+                    new ChapterStep { Title = "Install EF Core", Content = "Add `Microsoft.EntityFrameworkCore.Sqlite` package.", Type = StepType.Action },
+                    new ChapterStep { Title = "Create DbContext", Content = "Inherit from `DbContext` and add `DbSet<Course>`.", Type = StepType.Action },
+                    new ChapterStep { Title = "Add Migration", Content = "Run `dotnet ef migrations add InitialCreate`.", Type = StepType.Action }
+                },
+                Quiz = new Quiz { Questions = new List<QuizQuestion> { new QuizQuestion { Text = "What tool manages DB schema changes?", Options = new List<string> { "Git", "Migrations", "Docker", "NPM" }, CorrectOptionIndex = 1, Explanation = "EF Core Migrations manage schema changes." } } }
             },
             new Chapter
             {
@@ -137,7 +267,14 @@ public class ChapterService
                     "DELETE remove",
                     "Returning proper HTTP status codes",
                     "Async design"
-                }
+                },
+                Steps = new List<ChapterStep>
+                {
+                    new ChapterStep { Title = "Implement GET", Content = "Use `dbContext.Courses.ToListAsync()`.", Type = StepType.Action },
+                    new ChapterStep { Title = "Implement POST", Content = "Add endpoint to add new course.", Type = StepType.Action },
+                    new ChapterStep { Title = "Implement DELETE", Content = "Find by ID and Remove.", Type = StepType.Action }
+                },
+                Quiz = new Quiz { Questions = new List<QuizQuestion> { new QuizQuestion { Text = "Which HTTP method is for creating?", Options = new List<string> { "GET", "PUT", "POST", "DELETE" }, CorrectOptionIndex = 2, Explanation = "POST is standard for creation." } } }
             },
             new Chapter
             {
@@ -154,7 +291,14 @@ public class ChapterService
                     "Logging with ILogger",
                     "API responses conventions",
                     "Configuration using Options Pattern"
-                }
+                },
+                Steps = new List<ChapterStep>
+                {
+                    new ChapterStep { Title = "Add Validation", Content = "Use `[Required]` on DTO properties.", Type = StepType.Action },
+                    new ChapterStep { Title = "Global Error Handling", Content = "Add middleware to catch exceptions.", Type = StepType.Action },
+                    new ChapterStep { Title = "Logging", Content = "Inject `ILogger` and log actions.", Type = StepType.Action }
+                },
+                Quiz = new Quiz { Questions = new List<QuizQuestion> { new QuizQuestion { Text = "What attribute marks a field as mandatory?", Options = new List<string> { "[Key]", "[Required]", "[MaxLength]", "[Table]" }, CorrectOptionIndex = 1, Explanation = "[Required] ensures the field is not null/empty." } } }
             },
             
             // Blazor Basics
@@ -173,7 +317,14 @@ public class ChapterService
                     "Server vs WASM",
                     "Project structure overview",
                     "Routing basics"
-                }
+                },
+                Steps = new List<ChapterStep>
+                {
+                    new ChapterStep { Title = "Explore Project", Content = "Look at `App.razor` and `MainLayout.razor`.", Type = StepType.Read },
+                    new ChapterStep { Title = "Run App", Content = "Run `dotnet run` in Web project.", Type = StepType.Action },
+                    new ChapterStep { Title = "See Counter", Content = "Navigate to Counter page and click button.", Type = StepType.Action }
+                },
+                Quiz = new Quiz { Questions = new List<QuizQuestion> { new QuizQuestion { Text = "Where does Blazor Server code run?", Options = new List<string> { "Client Browser", "Web Server", "Database", "CDN" }, CorrectOptionIndex = 1, Explanation = "Blazor Server runs on the server and communicates via SignalR." } } }
             },
             new Chapter
             {
@@ -188,7 +339,14 @@ public class ChapterService
                     "Hot reload",
                     "Browser dev tools",
                     "Debugging C# in the browser"
-                }
+                },
+                Steps = new List<ChapterStep>
+                {
+                    new ChapterStep { Title = "Enable Hot Reload", Content = "Run with `dotnet watch`.", Type = StepType.Action },
+                    new ChapterStep { Title = "Make Change", Content = "Change text in `Index.razor` and save.", Type = StepType.Action },
+                    new ChapterStep { Title = "Verify", Content = "See browser update instantly.", Type = StepType.Action }
+                },
+                Quiz = new Quiz { Questions = new List<QuizQuestion> { new QuizQuestion { Text = "What command enables Hot Reload?", Options = new List<string> { "dotnet run", "dotnet build", "dotnet watch", "dotnet clean" }, CorrectOptionIndex = 2, Explanation = "dotnet watch monitors files and reloads." } } }
             },
             
             // Components
@@ -206,7 +364,14 @@ public class ChapterService
                     ".razor anatomy",
                     "Code-behind patterns",
                     "Component lifecycle basics"
-                }
+                },
+                Steps = new List<ChapterStep>
+                {
+                    new ChapterStep { Title = "Create Component", Content = "Create `MyComponent.razor`.", Type = StepType.Action },
+                    new ChapterStep { Title = "Add Markup", Content = "Add `<h3>My Component</h3>`.", Type = StepType.Action },
+                    new ChapterStep { Title = "Use Component", Content = "Add `<MyComponent />` to `Index.razor`.", Type = StepType.Action }
+                },
+                Quiz = new Quiz { Questions = new List<QuizQuestion> { new QuizQuestion { Text = "What is the file extension for a Razor component?", Options = new List<string> { ".cs", ".html", ".razor", ".cshtml" }, CorrectOptionIndex = 2, Explanation = ".razor is used for Blazor components." } } }
             },
             new Chapter
             {
@@ -223,7 +388,14 @@ public class ChapterService
                     "@inject",
                     "@code",
                     "@attribute"
-                }
+                },
+                Steps = new List<ChapterStep>
+                {
+                    new ChapterStep { Title = "Add Route", Content = "Add `@page \"/my-page\"` to top of file.", Type = StepType.Action },
+                    new ChapterStep { Title = "Inject Service", Content = "Add `@inject NavigationManager Nav`.", Type = StepType.Action },
+                    new ChapterStep { Title = "Add Code", Content = "Add `@code { ... }` block.", Type = StepType.Action }
+                },
+                Quiz = new Quiz { Questions = new List<QuizQuestion> { new QuizQuestion { Text = "Which directive defines a route?", Options = new List<string> { "@route", "@page", "@path", "@url" }, CorrectOptionIndex = 1, Explanation = "@page defines the URL route." } } }
             },
             new Chapter
             {
@@ -239,7 +411,14 @@ public class ChapterService
                     "EventCallback",
                     "Form submissions",
                     "Two-way binding (bind-Value)"
-                }
+                },
+                Steps = new List<ChapterStep>
+                {
+                    new ChapterStep { Title = "Handle Click", Content = "Add `@onclick=\"HandleClick\"` to a button.", Type = StepType.Action },
+                    new ChapterStep { Title = "Bind Input", Content = "Use `@bind-Value=\"myText\"` on an input.", Type = StepType.Action },
+                    new ChapterStep { Title = "Test", Content = "Type in input and see value update.", Type = StepType.Action }
+                },
+                Quiz = new Quiz { Questions = new List<QuizQuestion> { new QuizQuestion { Text = "How do you bind an input value?", Options = new List<string> { "@bind", "@bind-Value", "value=", "ng-model" }, CorrectOptionIndex = 1, Explanation = "@bind-Value is the standard two-way binding syntax." } } }
             },
             new Chapter
             {
@@ -255,7 +434,14 @@ public class ChapterService
                     "OnParametersSet",
                     "OnAfterRender / OnAfterRenderAsync",
                     "When they run & common pitfalls"
-                }
+                },
+                Steps = new List<ChapterStep>
+                {
+                    new ChapterStep { Title = "Override OnInitialized", Content = "Load data in `OnInitializedAsync`.", Type = StepType.Action },
+                    new ChapterStep { Title = "Log Lifecycle", Content = "Add `Console.WriteLine` to lifecycle methods.", Type = StepType.Action },
+                    new ChapterStep { Title = "Observe", Content = "Watch console when navigating.", Type = StepType.Action }
+                },
+                Quiz = new Quiz { Questions = new List<QuizQuestion> { new QuizQuestion { Text = "Which method runs first?", Options = new List<string> { "OnAfterRender", "OnParametersSet", "OnInitialized", "Dispose" }, CorrectOptionIndex = 2, Explanation = "OnInitialized runs first after the component is created." } } }
             },
             new Chapter
             {
@@ -271,7 +457,14 @@ public class ChapterService
                     "StateHasChanged()",
                     "Preventing unnecessary rerenders",
                     "Local vs global state"
-                }
+                },
+                Steps = new List<ChapterStep>
+                {
+                    new ChapterStep { Title = "Manual Render", Content = "Call `StateHasChanged()` after async work.", Type = StepType.Action },
+                    new ChapterStep { Title = "ShouldRender", Content = "Override `ShouldRender` to optimize.", Type = StepType.Read },
+                    new ChapterStep { Title = "Test", Content = "Verify UI updates correctly.", Type = StepType.Action }
+                },
+                Quiz = new Quiz { Questions = new List<QuizQuestion> { new QuizQuestion { Text = "What method forces a re-render?", Options = new List<string> { "Render()", "Update()", "StateHasChanged()", "Refresh()" }, CorrectOptionIndex = 2, Explanation = "StateHasChanged() notifies the component that state has changed." } } }
             },
             new Chapter
             {
@@ -287,7 +480,14 @@ public class ChapterService
                     "Partial UI reuse",
                     "Slots via RenderFragment",
                     "Parameterizing components"
-                }
+                },
+                Steps = new List<ChapterStep>
+                {
+                    new ChapterStep { Title = "Create Card", Content = "Create a reusable `Card.razor`.", Type = StepType.Action },
+                    new ChapterStep { Title = "Add ChildContent", Content = "Add `[Parameter] public RenderFragment ChildContent { get; set; }`.", Type = StepType.Action },
+                    new ChapterStep { Title = "Use Card", Content = "Wrap content in `<Card>...</Card>`.", Type = StepType.Action }
+                },
+                Quiz = new Quiz { Questions = new List<QuizQuestion> { new QuizQuestion { Text = "What type is used for child content?", Options = new List<string> { "string", "html", "RenderFragment", "ComponentBase" }, CorrectOptionIndex = 2, Explanation = "RenderFragment represents a segment of UI content." } } }
             },
             
             // State Management
@@ -304,7 +504,14 @@ public class ChapterService
                     "Parent → Child with [Parameter]",
                     "Child → Parent via EventCallback",
                     "Sibling communication patterns"
-                }
+                },
+                Steps = new List<ChapterStep>
+                {
+                    new ChapterStep { Title = "Parent to Child", Content = "Pass data via `[Parameter]`.", Type = StepType.Action },
+                    new ChapterStep { Title = "Child to Parent", Content = "Invoke `EventCallback` from child.", Type = StepType.Action },
+                    new ChapterStep { Title = "Test", Content = "Verify data flows both ways.", Type = StepType.Action }
+                },
+                Quiz = new Quiz { Questions = new List<QuizQuestion> { new QuizQuestion { Text = "How does a child notify a parent?", Options = new List<string> { "Function Call", "EventCallback", "SignalR", "Global State" }, CorrectOptionIndex = 1, Explanation = "EventCallback allows child components to trigger events in the parent." } } }
             },
             new Chapter
             {
@@ -320,7 +527,14 @@ public class ChapterService
                     "Optional parameters",
                     "Passing complex types",
                     "Parameter binding pitfalls"
-                }
+                },
+                Steps = new List<ChapterStep>
+                {
+                    new ChapterStep { Title = "Add Parameter", Content = "Add `[Parameter] public string Text { get; set; }`.", Type = StepType.Action },
+                    new ChapterStep { Title = "Make Required", Content = "Add `[EditorRequired]` attribute.", Type = StepType.Action },
+                    new ChapterStep { Title = "Pass Object", Content = "Pass a `Course` object as a parameter.", Type = StepType.Action }
+                },
+                Quiz = new Quiz { Questions = new List<QuizQuestion> { new QuizQuestion { Text = "What attribute enforces a parameter is set?", Options = new List<string> { "[Required]", "[EditorRequired]", "[Mandatory]", "[NotNull]" }, CorrectOptionIndex = 1, Explanation = "[EditorRequired] warns if a parameter is missing at design time." } } }
             },
             new Chapter
             {
@@ -336,7 +550,14 @@ public class ChapterService
                     "CascadingParameter",
                     "Global shared context",
                     "Pros/cons vs DI"
-                }
+                },
+                Steps = new List<ChapterStep>
+                {
+                    new ChapterStep { Title = "Wrap App", Content = "Wrap `App.razor` content in `<CascadingValue Value=\"...\">`.", Type = StepType.Action },
+                    new ChapterStep { Title = "Consume Value", Content = "Use `[CascadingParameter]` in a child component.", Type = StepType.Action },
+                    new ChapterStep { Title = "Verify", Content = "Check if deep child receives the value.", Type = StepType.Action }
+                },
+                Quiz = new Quiz { Questions = new List<QuizQuestion> { new QuizQuestion { Text = "What tag provides a cascading value?", Options = new List<string> { "<Provider>", "<CascadingValue>", "<Context>", "<Global>" }, CorrectOptionIndex = 1, Explanation = "<CascadingValue> provides a value to all descendants." } } }
             },
             new Chapter
             {
@@ -352,7 +573,14 @@ public class ChapterService
                     "Centralized data services",
                     "Observables and notification patterns",
                     "UI state vs domain state"
-                }
+                },
+                Steps = new List<ChapterStep>
+                {
+                    new ChapterStep { Title = "Create State Service", Content = "Create `AppState.cs` with an event.", Type = StepType.Action },
+                    new ChapterStep { Title = "Inject Service", Content = "Register as Scoped in `Program.cs`.", Type = StepType.Action },
+                    new ChapterStep { Title = "Subscribe", Content = "Components subscribe to `OnChange` event.", Type = StepType.Action }
+                },
+                Quiz = new Quiz { Questions = new List<QuizQuestion> { new QuizQuestion { Text = "What lifetime should a state service usually have?", Options = new List<string> { "Transient", "Scoped", "Singleton", "Static" }, CorrectOptionIndex = 1, Explanation = "Scoped is per-user-session in Blazor Server." } } }
             },
             new Chapter
             {
@@ -368,7 +596,14 @@ public class ChapterService
                     "Layout components",
                     "Basic integration with Bootstrap or Tailwind",
                     "UI composition best practices"
-                }
+                },
+                Steps = new List<ChapterStep>
+                {
+                    new ChapterStep { Title = "CSS Isolation", Content = "Create `MyComponent.razor.css`.", Type = StepType.Action },
+                    new ChapterStep { Title = "Add Styles", Content = "Add scoped styles.", Type = StepType.Action },
+                    new ChapterStep { Title = "Conditional Class", Content = "Use `@(isActive ? \"active\" : \"\")`.", Type = StepType.Action }
+                },
+                Quiz = new Quiz { Questions = new List<QuizQuestion> { new QuizQuestion { Text = "How do you scope CSS to a component?", Options = new List<string> { "Inline styles", "Global CSS", "Component.razor.css", "!important" }, CorrectOptionIndex = 2, Explanation = "Creating a file named Component.razor.css enables CSS isolation." } } }
             },
             
             // Dashboard
@@ -388,7 +623,14 @@ public class ChapterService
                     "Delete confirmation",
                     "Loading states",
                     "Error display"
-                }
+                },
+                Steps = new List<ChapterStep>
+                {
+                    new ChapterStep { Title = "Create List Page", Content = "Fetch and display list of courses.", Type = StepType.Action },
+                    new ChapterStep { Title = "Create Details Page", Content = "Show details for a specific ID.", Type = StepType.Action },
+                    new ChapterStep { Title = "Create Form", Content = "Use `EditForm` for creating courses.", Type = StepType.Action }
+                },
+                Quiz = new Quiz { Questions = new List<QuizQuestion> { new QuizQuestion { Text = "What component handles form validation?", Options = new List<string> { "Form", "EditForm", "ValidateForm", "InputForm" }, CorrectOptionIndex = 1, Explanation = "EditForm is the standard Blazor component for forms with validation." } } }
             },
             new Chapter
             {
@@ -405,7 +647,14 @@ public class ChapterService
                     "Mapping API data to UI models",
                     "Error handling in UI",
                     "Retry and fallback patterns"
-                }
+                },
+                Steps = new List<ChapterStep>
+                {
+                    new ChapterStep { Title = "Inject HttpClient", Content = "Inject `HttpClient` configured for API.", Type = StepType.Action },
+                    new ChapterStep { Title = "Fetch Data", Content = "Call `GetFromJsonAsync<List<CourseDto>>`.", Type = StepType.Action },
+                    new ChapterStep { Title = "Handle Errors", Content = "Wrap in try-catch and show error message.", Type = StepType.Action }
+                },
+                Quiz = new Quiz { Questions = new List<QuizQuestion> { new QuizQuestion { Text = "What method fetches JSON data?", Options = new List<string> { "GetAsync", "GetJsonAsync", "GetFromJsonAsync", "FetchJson" }, CorrectOptionIndex = 2, Explanation = "GetFromJsonAsync is the helper method to fetch and deserialize JSON." } } }
             },
             new Chapter
             {
@@ -422,7 +671,14 @@ public class ChapterService
                     "Sorting",
                     "Pagination",
                     "Optional: simple charts (bar or line)"
-                }
+                },
+                Steps = new List<ChapterStep>
+                {
+                    new ChapterStep { Title = "Add Search", Content = "Filter list based on text input.", Type = StepType.Action },
+                    new ChapterStep { Title = "Add Sorting", Content = "Sort list by clicking headers.", Type = StepType.Action },
+                    new ChapterStep { Title = "Add Pagination", Content = "Show only 10 items per page.", Type = StepType.Action }
+                },
+                Quiz = new Quiz { Questions = new List<QuizQuestion> { new QuizQuestion { Text = "Where should complex filtering logic ideally happen?", Options = new List<string> { "Client Browser", "API/Database", "Middleware", "CSS" }, CorrectOptionIndex = 1, Explanation = "Filtering at the database level is most efficient for large datasets." } } }
             },
             
             // Advanced
@@ -438,7 +694,14 @@ public class ChapterService
                     "API integration tests",
                     "Component tests",
                     "Basic test organization"
-                }
+                },
+                Steps = new List<ChapterStep>
+                {
+                    new ChapterStep { Title = "Setup Test Project", Content = "Create xUnit project.", Type = StepType.Action },
+                    new ChapterStep { Title = "Test API", Content = "Use `WebApplicationFactory` to test endpoints.", Type = StepType.Action },
+                    new ChapterStep { Title = "Test Components", Content = "Use `bunit` library for component tests.", Type = StepType.Action }
+                },
+                Quiz = new Quiz { Questions = new List<QuizQuestion> { new QuizQuestion { Text = "What library is popular for Blazor testing?", Options = new List<string> { "Jest", "bunit", "Mocha", "Selenium" }, CorrectOptionIndex = 1, Explanation = "bunit is the standard for unit testing Blazor components." } } }
             },
             new Chapter
             {
@@ -453,7 +716,14 @@ public class ChapterService
                     "Extracting services",
                     "Improving naming",
                     "Architectural touch-ups"
-                }
+                },
+                Steps = new List<ChapterStep>
+                {
+                    new ChapterStep { Title = "Review Code", Content = "Look for duplicated logic.", Type = StepType.Action },
+                    new ChapterStep { Title = "Extract Service", Content = "Move logic to a dedicated service.", Type = StepType.Action },
+                    new ChapterStep { Title = "Clean Up", Content = "Remove unused usings and comments.", Type = StepType.Action }
+                },
+                Quiz = new Quiz { Questions = new List<QuizQuestion> { new QuizQuestion { Text = "Why refactor?", Options = new List<string> { "To make code faster", "To make code maintainable", "To add features", "To break things" }, CorrectOptionIndex = 1, Explanation = "Refactoring primarily improves maintainability and readability." } } }
             },
             new Chapter
             {
@@ -469,7 +739,14 @@ public class ChapterService
                     "Multi-tenant patterns",
                     "Background jobs",
                     "Real-time updates with SignalR"
-                }
+                },
+                Steps = new List<ChapterStep>
+                {
+                    new ChapterStep { Title = "Explore Auth", Content = "Read about ASP.NET Core Identity.", Type = StepType.Read },
+                    new ChapterStep { Title = "Explore SignalR", Content = "Understand real-time communication.", Type = StepType.Read },
+                    new ChapterStep { Title = "Plan Next", Content = "Decide what to add next.", Type = StepType.Action }
+                },
+                Quiz = new Quiz { Questions = new List<QuizQuestion> { new QuizQuestion { Text = "What handles real-time web functionality in .NET?", Options = new List<string> { "WCF", "SignalR", "REST", "SOAP" }, CorrectOptionIndex = 1, Explanation = "SignalR is the library for real-time web functionality." } } }
             },
             
             // Wrap-Up
@@ -486,7 +763,14 @@ public class ChapterService
                     "Architecture decisions recap",
                     "Best practices summary",
                     "Next steps for continued learning"
-                }
+                },
+                Steps = new List<ChapterStep>
+                {
+                    new ChapterStep { Title = "Review", Content = "Look back at what you built.", Type = StepType.Read },
+                    new ChapterStep { Title = "Celebrate", Content = "You built a full-stack .NET 10 app!", Type = StepType.Read },
+                    new ChapterStep { Title = "Share", Content = "Share your project on GitHub.", Type = StepType.Action }
+                },
+                Quiz = new Quiz { Questions = new List<QuizQuestion> { new QuizQuestion { Text = "What was the main UI framework used?", Options = new List<string> { "Angular", "React", "Blazor", "Vue" }, CorrectOptionIndex = 2, Explanation = "We used Blazor for the UI." } } }
             }
         };
     }
@@ -553,6 +837,41 @@ public class ChapterService
             progress.State = LearningState.InProgress;
             progress.StartedAt = DateTime.UtcNow;
             progress.ProgressPercentage = 0;
+            progress.CurrentStepIndex = 0;
+            OnProgressChanged?.Invoke();
+        }
+    }
+
+
+
+    /// <summary>
+    /// Advances to the next step in a chapter.
+    /// </summary>
+    public void CompleteStep(int chapterId, int stepIndex)
+    {
+        var progress = GetProgress(chapterId);
+        var chapter = GetAllChapters().FirstOrDefault(c => c.Id == chapterId);
+        
+        if (chapter == null) return;
+        
+        // If this is the last step (or beyond), we don't just "complete" it here, 
+        // the UI should trigger the Quiz or CompleteChapter. 
+        // But we can track the index.
+        
+        if (stepIndex >= progress.CurrentStepIndex)
+        {
+            progress.CurrentStepIndex = stepIndex + 1;
+            
+            // Calculate progress based on steps
+            // If there are steps, mapped 0-90%. Quiz/Completion is the rest.
+            if (chapter.Steps.Any())
+            {
+                int totalSteps = chapter.Steps.Count;
+                double stepWeight = 90.0 / totalSteps;
+                int newPercentage = (int)(progress.CurrentStepIndex * stepWeight);
+                progress.ProgressPercentage = Math.Clamp(newPercentage, 0, 90);
+            }
+            
             OnProgressChanged?.Invoke();
         }
     }
