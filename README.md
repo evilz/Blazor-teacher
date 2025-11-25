@@ -2,7 +2,69 @@
 
 An interactive .NET 10 tutorial that demonstrates building a full REST API with CRUD operations (using EF Core + SQLite) and a Blazor Dashboard. This comprehensive tutorial covers the complete stack from backend API development to frontend Blazor components.
 
-## 📚 Tutorial Contents
+## 📚 Full Tutorial Outline
+
+This tutorial consists of **28 chapters** organized into the following sections, with built-in progress tracking:
+
+### 📖 Introduction (Chapter 1)
+- What .NET 10 brings
+- Architecture overview (API → Data → Blazor)
+- Learning goals and structure
+
+### 🛠️ Environment Setup (Chapters 2-3)
+- Developer environment setup
+- Creating the solution structure
+
+### 🚀 API Development (Chapters 4-8)
+- First API: Hello World
+- Domain Modeling
+- EF Core Setup (Infrastructure Layer)
+- CRUD Implementation
+- Validation, Error Handling & Logging
+
+### ⚡ Blazor Basics (Chapters 9-10)
+- Blazor Dashboard: Introduction
+- Blazor Developer Environment Setup
+
+### 🧩 Components (Chapters 11-16)
+- Components at a Glance
+- Component Directives
+- Event Handling
+- Lifecycle Methods
+- Component Rendering & State
+- Building Reusable Components
+
+### 🔄 State Management (Chapters 17-21)
+- Component Communication
+- Parameters
+- Cascading Parameters
+- Single Source of Truth
+- Styling & UI Foundations
+
+### 📊 Dashboard (Chapters 22-24)
+- Dashboard Pages Implementation
+- Integrating the API
+- Enriching the Dashboard
+
+### 🎯 Advanced Topics (Chapters 25-27)
+- Testing (Optional)
+- Refactoring & Cleanup
+- Extending the Application (Optional)
+
+### 🎉 Wrap-Up (Chapter 28)
+- Recap the journey and what was learned
+
+## 🎯 Learning Progress Tracking
+
+The tutorial includes a built-in progress tracking system:
+- Mark chapters as **Not Started**, **In Progress**, or **Completed**
+- View overall completion percentage
+- Track when you started and completed each chapter
+- Reset progress to start fresh
+
+Navigate to `/tutorial/outline` in the dashboard to see the complete outline with progress tracking.
+
+## 📚 Tutorial Contents (Detail)
 
 ### API Development
 - ✅ Environment setup and .NET 10 configuration
@@ -142,11 +204,12 @@ BlazorTeacher/
 Navigate to these pages in the Dashboard to learn:
 
 1. **Home** (`/`) - Tutorial overview and quick links
-2. **API Tutorial** (`/tutorial/api`) - REST API development guide
-3. **Components Tutorial** (`/tutorial/components`) - Blazor components deep dive
-4. **State Tutorial** (`/tutorial/state`) - State management patterns
-5. **Course Dashboard** (`/courses`) - Full CRUD example
-6. **Lifecycle Demo** (`/lifecycle`) - Interactive lifecycle explorer
+2. **Full Tutorial Outline** (`/tutorial/outline`) - Complete 28-chapter guide with progress tracking
+3. **API Tutorial** (`/tutorial/api`) - REST API development guide
+4. **Components Tutorial** (`/tutorial/components`) - Blazor components deep dive
+5. **State Tutorial** (`/tutorial/state`) - State management patterns
+6. **Course Dashboard** (`/courses`) - Full CRUD example
+7. **Lifecycle Demo** (`/lifecycle`) - Interactive lifecycle explorer
 
 ## 🛠️ Technologies Used
 

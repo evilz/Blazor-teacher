@@ -17,6 +17,9 @@ builder.Services.AddHttpClient<CourseService>(client =>
 // In production, consider scoped or per-user state management
 builder.Services.AddScoped<AppState>();
 
+// Register chapter service for tutorial progress tracking
+builder.Services.AddScoped<ChapterService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
