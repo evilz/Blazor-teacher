@@ -74,7 +74,7 @@ Represents a tutorial chapter for learning progress tracking:
 - Title (string, required)
 - Description (string)
 - Route (string?, optional)
-- Category (enum: Introduction/Setup/ApiDevelopment/BlazorBasics/Components/StateManagement/Dashboard/Advanced/WrapUp)
+- Category (enum: Introduction/EnvironmentSetup/ApiDevelopment/BlazorBasics/ComponentDevelopment/StateManagement/DashboardDevelopment/AdvancedTopics/WrapUp)
 - Topics (List<string>)
 - KeyPoints (List<string>)
 
@@ -95,8 +95,8 @@ Relationship: A Chapter can have multiple learning progress entries (ChapterProg
    - Reduces refactoring later in development
 
 3. **Why might Blazor Server be easier to start with than Blazor WASM?**
-   - No need for a separate API call for initial data (direct DB access)
-   - Faster initial load (smaller download)
-   - Easier debugging (runs on server)
+   - Faster initial load (smaller download, no WebAssembly runtime required)
+   - Easier debugging (runs on server with full .NET tooling)
    - Full access to .NET libraries without restrictions
    - SignalR handles UI updates automatically
+   - No CORS configuration needed when API runs on same server
