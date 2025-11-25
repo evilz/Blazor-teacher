@@ -1,0 +1,519 @@
+@* 
+    Courses.razor - Course Dashboard Page
+    A comprehensive example demonstrating:
+    - Component composition
+    - State management
+    - Cascading parameters
+    - Event handling
+    - Service integration
+*@
+
+@page "/courses"
+@inject CourseService CourseService
+@inject AppState AppState
+@rendermode InteractiveServer
+
+<PageTitle>Course Dashboard</PageTitle>
+
+@* Cascading parameter to provide theme to child components *@
+<CascadingValue Name="Theme" Value="@AppState.CurrentTheme">
+    <div class="courses-page">
+        <header class="page-header">
+            <div class="header-content">
+                <h1>📚 Course Dashboard</h1>
+                <p>Manage your courses with full CRUD operations</p>
+            </div>
+            <div class="header-actions">
+                <button class="btn btn-theme" @onclick="ToggleTheme">
+                    @(AppState.CurrentTheme == "light" ? "🌙" : "☀️") Theme
+                </button>
+                <button class="btn btn-primary" @onclick="ShowCreateForm">
+                    ➕ New Course
+                </button>
+            </div>
+        </header>
+
+        @if (!string.IsNullOrEmpty(alertMessage))
+        {
+            <AlertMessage Message="@alertMessage" Type="@alertType" OnDismiss="DismissAlert" />
+        }
+
+        <div class="filters-section">
+            <div class="search-box">
+                <input type="text" 
+                       placeholder="Search courses..." 
+                       @bind="searchTerm" 
+                       @bind:event="oninput"
+                       @onkeyup="HandleSearchKeyUp" />
+                <button class="btn btn-search" @onclick="SearchCourses">🔍</button>
+            </div>
+            
+            <div class="filter-controls">
+                <select @bind="selectedLevel" @bind:event="onchange" class="filter-select">
+                    <option value="">All Levels</option>
+                    @foreach (var level in Enum.GetValues<CourseLevel>())
+                    {
+                        <option value="@level">@level</option>
+                    }
+                </select>
+                
+                <select @bind="selectedPublished" @bind:event="onchange" class="filter-select">
+                    <option value="">All Status</option>
+                    <option value="true">Published</option>
+                    <option value="false">Draft</option>
+                </select>
+                
+                <button class="btn btn-secondary" @onclick="ClearFilters">Clear</button>
+                <button class="btn btn-primary" @onclick="ApplyFilters">Apply</button>
+            </div>
+        </div>
+
+        <CourseList 
+            Courses="@courses" 
+            IsLoading="@isLoading"
+            SearchTerm="@searchTerm"
+            OnView="ViewCourse"
+            OnEdit="EditCourse"
+            OnDelete="ConfirmDeleteCourse" />
+
+        @* Course Form Modal *@
+        @if (showForm)
+        {
+            <div class="modal-overlay" @onclick="CloseForm">
+                <div class="modal-content" @onclick:stopPropagation>
+                    <h2>@(editingCourse == null ? "Create New Course" : "Edit Course")</h2>
+                    <CourseForm 
+                        Course="@editingCourse"
+                        OnSubmit="HandleFormSubmit"
+                        OnCancel="CloseForm" />
+                </div>
+            </div>
+        }
+
+        @* Course Detail Modal *@
+        @if (viewingCourse != null)
+        {
+            <div class="modal-overlay" @onclick="CloseViewModal">
+                <div class="modal-content detail-modal" @onclick:stopPropagation>
+                    <h2>@viewingCourse.Title</h2>
+                    <div class="course-detail">
+                        <div class="detail-row">
+                            <span class="label">Instructor:</span>
+                            <span class="value">@viewingCourse.Instructor</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="label">Level:</span>
+                            <span class="value badge @viewingCourse.Level.ToString().ToLower()">@viewingCourse.Level</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="label">Duration:</span>
+                            <span class="value">@viewingCourse.DurationInHours hours</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="label">Price:</span>
+                            <span class="value price">$@viewingCourse.Price.ToString("F2")</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="label">Status:</span>
+                            <span class="value">@(viewingCourse.IsPublished ? "Published" : "Draft")</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="label">Lessons:</span>
+                            <span class="value">@viewingCourse.LessonCount</span>
+                        </div>
+                        <div class="detail-row full-width">
+                            <span class="label">Description:</span>
+                            <p class="description">@viewingCourse.Description</p>
+                        </div>
+                    </div>
+                    <button class="btn btn-secondary" @onclick="CloseViewModal">Close</button>
+                </div>
+            </div>
+        }
+
+        <ConfirmDialog 
+            IsOpen="@showDeleteConfirm"
+            Title="Delete Course"
+            Message="@($"Are you sure you want to delete '{courseToDelete?.Title}'? This action cannot be undone.")"
+            ConfirmText="Delete"
+            ConfirmButtonType="danger"
+            OnClose="HandleDeleteConfirmation" />
+    </div>
+</CascadingValue>
+
+@code {
+    private List<CourseDto>? courses;
+    private bool isLoading = true;
+    private string searchTerm = "";
+    private CourseLevel? selectedLevel;
+    private string? selectedPublished;
+    
+    private bool showForm = false;
+    private CourseDto? editingCourse;
+    private CourseDto? viewingCourse;
+    
+    private bool showDeleteConfirm = false;
+    private CourseDto? courseToDelete;
+    
+    private string? alertMessage;
+    private string alertType = "info";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadCourses();
+        
+        // Subscribe to state changes
+        AppState.OnChange += StateHasChanged;
+    }
+
+    private async Task LoadCourses()
+    {
+        isLoading = true;
+        
+        bool? isPublished = string.IsNullOrEmpty(selectedPublished) 
+            ? null 
+            : bool.Parse(selectedPublished);
+        
+        courses = await CourseService.GetCoursesAsync(selectedLevel, isPublished, searchTerm);
+        isLoading = false;
+    }
+
+    private async Task SearchCourses()
+    {
+        await LoadCourses();
+    }
+
+    private async Task HandleSearchKeyUp(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            await SearchCourses();
+        }
+    }
+
+    private async Task ApplyFilters()
+    {
+        await LoadCourses();
+    }
+
+    private async Task ClearFilters()
+    {
+        searchTerm = "";
+        selectedLevel = null;
+        selectedPublished = null;
+        await LoadCourses();
+    }
+
+    private void ToggleTheme()
+    {
+        AppState.ToggleTheme();
+    }
+
+    private void ShowCreateForm()
+    {
+        editingCourse = null;
+        showForm = true;
+    }
+
+    private void EditCourse(CourseDto course)
+    {
+        editingCourse = course;
+        showForm = true;
+    }
+
+    private void ViewCourse(CourseDto course)
+    {
+        viewingCourse = course;
+    }
+
+    private void CloseViewModal()
+    {
+        viewingCourse = null;
+    }
+
+    private void CloseForm()
+    {
+        showForm = false;
+        editingCourse = null;
+    }
+
+    private async Task HandleFormSubmit(CourseForm.CourseFormModel model)
+    {
+        if (editingCourse == null)
+        {
+            // Create new course
+            var createDto = new CreateCourseDto(
+                model.Title,
+                model.Description,
+                model.Instructor,
+                model.DurationInHours,
+                model.Price,
+                model.Level);
+            
+            var result = await CourseService.CreateCourseAsync(createDto);
+            if (result != null)
+            {
+                ShowAlert("Course created successfully!", "success");
+                await LoadCourses();
+            }
+            else
+            {
+                ShowAlert("Failed to create course.", "error");
+            }
+        }
+        else
+        {
+            // Update existing course
+            var updateDto = new UpdateCourseDto(
+                model.Title,
+                model.Description,
+                model.Instructor,
+                model.DurationInHours,
+                model.Price,
+                model.Level,
+                model.IsPublished);
+            
+            var result = await CourseService.UpdateCourseAsync(editingCourse.Id, updateDto);
+            if (result != null)
+            {
+                ShowAlert("Course updated successfully!", "success");
+                await LoadCourses();
+            }
+            else
+            {
+                ShowAlert("Failed to update course.", "error");
+            }
+        }
+        
+        CloseForm();
+    }
+
+    private void ConfirmDeleteCourse(CourseDto course)
+    {
+        courseToDelete = course;
+        showDeleteConfirm = true;
+    }
+
+    private async Task HandleDeleteConfirmation(bool confirmed)
+    {
+        showDeleteConfirm = false;
+        
+        if (confirmed && courseToDelete != null)
+        {
+            var success = await CourseService.DeleteCourseAsync(courseToDelete.Id);
+            if (success)
+            {
+                ShowAlert("Course deleted successfully!", "success");
+                await LoadCourses();
+            }
+            else
+            {
+                ShowAlert("Failed to delete course.", "error");
+            }
+        }
+        
+        courseToDelete = null;
+    }
+
+    private void ShowAlert(string message, string type)
+    {
+        alertMessage = message;
+        alertType = type;
+    }
+
+    private void DismissAlert()
+    {
+        alertMessage = null;
+    }
+
+    public void Dispose()
+    {
+        AppState.OnChange -= StateHasChanged;
+    }
+}
+
+<style>
+    .courses-page {
+        padding: 1.5rem;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .header-content h1 {
+        margin: 0;
+        font-size: 1.8rem;
+        color: #333;
+    }
+
+    .header-content p {
+        margin: 0.25rem 0 0 0;
+        color: #666;
+    }
+
+    .header-actions {
+        display: flex;
+        gap: 0.75rem;
+    }
+
+    .filters-section {
+        background: #f8f9fa;
+        padding: 1rem;
+        border-radius: 8px;
+        margin-bottom: 1.5rem;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        align-items: center;
+    }
+
+    .search-box {
+        display: flex;
+        flex: 1;
+        min-width: 200px;
+    }
+
+    .search-box input {
+        flex: 1;
+        padding: 0.5rem 1rem;
+        border: 1px solid #ddd;
+        border-radius: 6px 0 0 6px;
+        font-size: 0.9rem;
+    }
+
+    .btn-search {
+        border-radius: 0 6px 6px 0;
+        border: 1px solid #ddd;
+        border-left: none;
+        background: white;
+        padding: 0.5rem 1rem;
+    }
+
+    .filter-controls {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+
+    .filter-select {
+        padding: 0.5rem;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        font-size: 0.9rem;
+        min-width: 120px;
+    }
+
+    .btn {
+        padding: 0.5rem 1rem;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 0.9rem;
+        transition: background-color 0.2s;
+    }
+
+    .btn-primary {
+        background-color: #3498db;
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background-color: #2980b9;
+    }
+
+    .btn-secondary {
+        background-color: #e0e0e0;
+        color: #333;
+    }
+
+    .btn-theme {
+        background-color: #9b59b6;
+        color: white;
+    }
+
+    .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+    }
+
+    .modal-content {
+        background: white;
+        padding: 2rem;
+        border-radius: 12px;
+        max-width: 600px;
+        width: 90%;
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+
+    .modal-content h2 {
+        margin: 0 0 1.5rem 0;
+    }
+
+    .detail-modal {
+        max-width: 500px;
+    }
+
+    .course-detail {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .detail-row {
+        display: flex;
+        gap: 1rem;
+    }
+
+    .detail-row.full-width {
+        flex-direction: column;
+    }
+
+    .detail-row .label {
+        font-weight: 600;
+        color: #555;
+        min-width: 100px;
+    }
+
+    .detail-row .value {
+        color: #333;
+    }
+
+    .detail-row .price {
+        font-weight: 700;
+        color: #3498db;
+    }
+
+    .detail-row .description {
+        margin: 0.5rem 0 0 0;
+        line-height: 1.6;
+        color: #666;
+    }
+
+    .badge {
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        font-size: 0.8rem;
+    }
+
+    .badge.beginner { background: #e8f5e9; color: #2e7d32; }
+    .badge.intermediate { background: #fff3e0; color: #ef6c00; }
+    .badge.advanced { background: #fce4ec; color: #c2185b; }
+</style>

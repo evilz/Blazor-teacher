@@ -1,0 +1,197 @@
+﻿@page "/"
+
+<PageTitle>Blazor Teacher - Home</PageTitle>
+
+<div class="home-container">
+    <div class="hero-section">
+        <h1>🎓 Welcome to Blazor Teacher</h1>
+        <p class="hero-subtitle">An Interactive .NET 10 Tutorial for Building REST APIs and Blazor Dashboards</p>
+    </div>
+
+    <div class="features-grid">
+        <div class="feature-card">
+            <span class="feature-icon">🚀</span>
+            <h3>REST API with EF Core</h3>
+            <p>Learn to build a complete CRUD API using ASP.NET Core Web API, Entity Framework Core, and SQLite.</p>
+            <a href="/tutorial/api" class="feature-link">Explore API Tutorial →</a>
+        </div>
+
+        <div class="feature-card">
+            <span class="feature-icon">⚡</span>
+            <h3>Blazor Components</h3>
+            <p>Master Blazor components, directives, events, lifecycle, and rendering modes.</p>
+            <a href="/tutorial/components" class="feature-link">Learn Components →</a>
+        </div>
+
+        <div class="feature-card">
+            <span class="feature-icon">🔄</span>
+            <h3>State Management</h3>
+            <p>Understand cascading parameters, component communication, and state patterns.</p>
+            <a href="/tutorial/state" class="feature-link">Explore State →</a>
+        </div>
+
+        <div class="feature-card">
+            <span class="feature-icon">📊</span>
+            <h3>Dashboard Demo</h3>
+            <p>See all concepts in action with our fully functional course management dashboard.</p>
+            <a href="/courses" class="feature-link">View Dashboard →</a>
+        </div>
+    </div>
+
+    <div class="quick-start">
+        <h2>📚 Tutorial Contents</h2>
+        <div class="contents-list">
+            <div class="content-section">
+                <h4>API Development</h4>
+                <ul>
+                    <li>Environment Setup</li>
+                    <li>Solution Structure</li>
+                    <li>Domain Modeling</li>
+                    <li>EF Core & Migrations</li>
+                    <li>Validation</li>
+                    <li>Error Handling</li>
+                    <li>Logging</li>
+                </ul>
+            </div>
+            <div class="content-section">
+                <h4>Blazor Components</h4>
+                <ul>
+                    <li>Components Overview</li>
+                    <li>Directives</li>
+                    <li>Events</li>
+                    <li>Lifecycle</li>
+                    <li>Rendering Modes</li>
+                    <li>Reusable Components</li>
+                </ul>
+            </div>
+            <div class="content-section">
+                <h4>Communication</h4>
+                <ul>
+                    <li>Component Parameters</li>
+                    <li>Cascading Parameters</li>
+                    <li>Event Callbacks</li>
+                    <li>State Management</li>
+                    <li>CSS Isolation</li>
+                    <li>Styling Best Practices</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .home-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+
+    .hero-section {
+        text-align: center;
+        padding: 3rem 1rem;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 16px;
+        color: white;
+        margin-bottom: 2rem;
+    }
+
+    .hero-section h1 {
+        font-size: 2.5rem;
+        margin: 0 0 1rem 0;
+    }
+
+    .hero-subtitle {
+        font-size: 1.2rem;
+        opacity: 0.9;
+        margin: 0;
+    }
+
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 3rem;
+    }
+
+    .feature-card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    }
+
+    .feature-icon {
+        font-size: 2.5rem;
+        display: block;
+        margin-bottom: 1rem;
+    }
+
+    .feature-card h3 {
+        margin: 0 0 0.5rem 0;
+        color: #333;
+    }
+
+    .feature-card p {
+        color: #666;
+        margin: 0 0 1rem 0;
+        line-height: 1.5;
+    }
+
+    .feature-link {
+        color: #667eea;
+        text-decoration: none;
+        font-weight: 500;
+    }
+
+    .feature-link:hover {
+        text-decoration: underline;
+    }
+
+    .quick-start {
+        background: #f8f9fa;
+        padding: 2rem;
+        border-radius: 12px;
+    }
+
+    .quick-start h2 {
+        margin: 0 0 1.5rem 0;
+        color: #333;
+    }
+
+    .contents-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 2rem;
+    }
+
+    .content-section h4 {
+        color: #667eea;
+        margin: 0 0 0.75rem 0;
+    }
+
+    .content-section ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .content-section li {
+        padding: 0.35rem 0;
+        color: #555;
+        position: relative;
+        padding-left: 1.25rem;
+    }
+
+    .content-section li::before {
+        content: "✓";
+        position: absolute;
+        left: 0;
+        color: #27ae60;
+    }
+</style>

@@ -1,0 +1,71 @@
+@* 
+    AlertMessage.razor
+    A reusable alert/notification component.
+    Demonstrates:
+    - Event callbacks for component communication
+    - Conditional rendering based on parameters
+    - CSS classes based on state
+*@
+
+@if (IsVisible)
+{
+    <div class="alert alert-@Type" role="alert">
+        <div class="alert-content">
+            <span class="alert-icon">@GetIcon()</span>
+            <span class="alert-message">@Message</span>
+        </div>
+        @if (IsDismissible)
+        {
+            <button type="button" class="alert-close" @onclick="Dismiss" aria-label="Close">
+                ×
+            </button>
+        }
+    </div>
+}
+
+@code {
+    /// <summary>
+    /// The message to display in the alert.
+    /// </summary>
+    [Parameter]
+    public string Message { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Type of alert: "success", "error", "warning", "info".
+    /// </summary>
+    [Parameter]
+    public string Type { get; set; } = "info";
+
+    /// <summary>
+    /// Whether the alert is visible.
+    /// </summary>
+    [Parameter]
+    public bool IsVisible { get; set; } = true;
+
+    /// <summary>
+    /// Whether the alert can be dismissed.
+    /// </summary>
+    [Parameter]
+    public bool IsDismissible { get; set; } = true;
+
+    /// <summary>
+    /// Event callback when the alert is dismissed.
+    /// Demonstrates parent-child communication.
+    /// </summary>
+    [Parameter]
+    public EventCallback OnDismiss { get; set; }
+
+    private async Task Dismiss()
+    {
+        IsVisible = false;
+        await OnDismiss.InvokeAsync();
+    }
+
+    private string GetIcon() => Type switch
+    {
+        "success" => "✓",
+        "error" => "✗",
+        "warning" => "⚠",
+        _ => "ℹ"
+    };
+}

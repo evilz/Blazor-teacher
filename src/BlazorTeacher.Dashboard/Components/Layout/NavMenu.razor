@@ -1,0 +1,62 @@
+﻿<div class="top-row ps-3 navbar navbar-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="">🎓 Blazor Teacher</a>
+    </div>
+</div>
+
+<input type="checkbox" title="Navigation menu" class="navbar-toggler" />
+
+<div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
+    <nav class="nav flex-column">
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="courses">
+                <span class="bi bi-book-fill-nav-menu" aria-hidden="true"></span> Course Dashboard
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3 nav-section-title">
+            <span>📖 Tutorials</span>
+        </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="tutorial/api">
+                <span class="bi bi-code-nav-menu" aria-hidden="true"></span> API Development
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="tutorial/components">
+                <span class="bi bi-puzzle-nav-menu" aria-hidden="true"></span> Components
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="tutorial/state">
+                <span class="bi bi-diagram-nav-menu" aria-hidden="true"></span> State Management
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3 nav-section-title">
+            <span>🧪 Examples</span>
+        </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="counter">
+                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Counter Demo
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="lifecycle">
+                <span class="bi bi-arrow-repeat-nav-menu" aria-hidden="true"></span> Lifecycle Demo
+            </NavLink>
+        </div>
+    </nav>
+</div>
+

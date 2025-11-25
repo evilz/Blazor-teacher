@@ -1,0 +1,384 @@
+@* 
+    LifecycleDemo.razor
+    Demonstrates the Blazor component lifecycle methods.
+*@
+
+@page "/lifecycle"
+@implements IDisposable
+@rendermode InteractiveServer
+
+<PageTitle>Lifecycle Demo</PageTitle>
+
+<div class="lifecycle-demo">
+    <h1>🔄 Component Lifecycle Demo</h1>
+    <p>This page demonstrates all Blazor component lifecycle methods.</p>
+
+    <div class="lifecycle-log">
+        <h3>Lifecycle Events Log</h3>
+        <div class="log-container">
+            @foreach (var log in lifecycleLogs)
+            {
+                <div class="log-entry @log.Type">
+                    <span class="timestamp">@log.Timestamp.ToString("HH:mm:ss.fff")</span>
+                    <span class="method">@log.Method</span>
+                    <span class="message">@log.Message</span>
+                </div>
+            }
+        </div>
+        <button class="btn btn-secondary" @onclick="ClearLogs">Clear Logs</button>
+    </div>
+
+    <div class="demo-section">
+        <h3>Interactive Controls</h3>
+        <p>Use these controls to trigger different lifecycle events:</p>
+        
+        <div class="control-group">
+            <label>Counter (triggers re-render):</label>
+            <div class="counter-control">
+                <button @onclick="DecrementCounter">-</button>
+                <span>@counter</span>
+                <button @onclick="IncrementCounter">+</button>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label>Child Component Parameter:</label>
+            <input type="text" @bind="childParameter" @bind:event="oninput" />
+        </div>
+
+        <div class="control-group">
+            <label>Toggle Child Component:</label>
+            <button @onclick="ToggleChildComponent">
+                @(showChildComponent ? "Hide" : "Show") Child Component
+            </button>
+        </div>
+    </div>
+
+    @if (showChildComponent)
+    {
+        <LifecycleChildComponent 
+            Parameter="@childParameter"
+            OnLifecycleEvent="LogFromChild" />
+    }
+
+    <div class="lifecycle-info">
+        <h3>📖 Lifecycle Methods Explained</h3>
+        
+        <div class="info-card">
+            <h4>SetParametersAsync</h4>
+            <p>Called when the component receives parameters. This is the first method called and happens before OnInitialized.</p>
+        </div>
+
+        <div class="info-card">
+            <h4>OnInitialized / OnInitializedAsync</h4>
+            <p>Called once when the component is first initialized. Use for one-time initialization logic.</p>
+        </div>
+
+        <div class="info-card">
+            <h4>OnParametersSet / OnParametersSetAsync</h4>
+            <p>Called after SetParametersAsync, and whenever parameters change. Use for logic that depends on parameter values.</p>
+        </div>
+
+        <div class="info-card">
+            <h4>OnAfterRender / OnAfterRenderAsync</h4>
+            <p>Called after the component has rendered. The firstRender parameter indicates if it's the first render. Use for JavaScript interop.</p>
+        </div>
+
+        <div class="info-card">
+            <h4>ShouldRender</h4>
+            <p>Called to determine if the component should render. Return false to skip rendering for optimization.</p>
+        </div>
+
+        <div class="info-card">
+            <h4>Dispose / DisposeAsync</h4>
+            <p>Called when the component is disposed. Use to clean up resources, unsubscribe from events, etc.</p>
+        </div>
+    </div>
+</div>
+
+@code {
+    private List<LifecycleLog> lifecycleLogs = new();
+    private int counter = 0;
+    private string childParameter = "Hello";
+    private bool showChildComponent = true;
+
+    // Lifecycle method: Called when parameters are set
+    public override async Task SetParametersAsync(ParameterView parameters)
+    {
+        Log("SetParametersAsync", "Parameters are being set");
+        await base.SetParametersAsync(parameters);
+    }
+
+    // Lifecycle method: Called once when component is initialized
+    protected override void OnInitialized()
+    {
+        Log("OnInitialized", "Component is initializing (sync)");
+    }
+
+    // Lifecycle method: Async version of OnInitialized
+    protected override async Task OnInitializedAsync()
+    {
+        Log("OnInitializedAsync", "Component is initializing (async)");
+        await Task.CompletedTask;
+    }
+
+    // Lifecycle method: Called when parameters change
+    protected override void OnParametersSet()
+    {
+        Log("OnParametersSet", "Parameters have been set (sync)");
+    }
+
+    // Lifecycle method: Async version of OnParametersSet
+    protected override async Task OnParametersSetAsync()
+    {
+        Log("OnParametersSetAsync", "Parameters have been set (async)");
+        await Task.CompletedTask;
+    }
+
+    // Lifecycle method: Called after render
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            Log("OnAfterRender", "First render completed", "first-render");
+        }
+        else
+        {
+            Log("OnAfterRender", "Re-render completed", "re-render");
+        }
+    }
+
+    // Lifecycle method: Async version of OnAfterRender
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            Log("OnAfterRenderAsync", "First render completed (async)", "first-render");
+        }
+        await Task.CompletedTask;
+    }
+
+    // Lifecycle method: Determines if component should render
+    protected override bool ShouldRender()
+    {
+        // Always render in this demo
+        return true;
+    }
+
+    // Lifecycle method: Clean up resources
+    public void Dispose()
+    {
+        Log("Dispose", "Component is being disposed", "dispose");
+    }
+
+    private void IncrementCounter()
+    {
+        counter++;
+        Log("User Action", $"Counter incremented to {counter}", "user-action");
+    }
+
+    private void DecrementCounter()
+    {
+        counter--;
+        Log("User Action", $"Counter decremented to {counter}", "user-action");
+    }
+
+    private void ToggleChildComponent()
+    {
+        showChildComponent = !showChildComponent;
+        Log("User Action", $"Child component {(showChildComponent ? "shown" : "hidden")}", "user-action");
+    }
+
+    private void LogFromChild(string message)
+    {
+        Log("Child Component", message, "child");
+    }
+
+    private void Log(string method, string message, string type = "lifecycle")
+    {
+        lifecycleLogs.Insert(0, new LifecycleLog
+        {
+            Timestamp = DateTime.Now,
+            Method = method,
+            Message = message,
+            Type = type
+        });
+
+        // Keep only last 50 logs
+        if (lifecycleLogs.Count > 50)
+        {
+            lifecycleLogs.RemoveAt(lifecycleLogs.Count - 1);
+        }
+    }
+
+    private void ClearLogs()
+    {
+        lifecycleLogs.Clear();
+        Log("User Action", "Logs cleared", "user-action");
+    }
+
+    private class LifecycleLog
+    {
+        public DateTime Timestamp { get; set; }
+        public string Method { get; set; } = "";
+        public string Message { get; set; } = "";
+        public string Type { get; set; } = "";
+    }
+}
+
+<style>
+    .lifecycle-demo {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+
+    .lifecycle-demo h1 {
+        margin-bottom: 0.5rem;
+    }
+
+    .lifecycle-demo > p {
+        color: #666;
+        margin-bottom: 2rem;
+    }
+
+    .lifecycle-log {
+        background: #1e1e1e;
+        border-radius: 8px;
+        padding: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .lifecycle-log h3 {
+        color: #fff;
+        margin: 0 0 1rem 0;
+    }
+
+    .log-container {
+        max-height: 300px;
+        overflow-y: auto;
+        margin-bottom: 1rem;
+    }
+
+    .log-entry {
+        display: flex;
+        gap: 1rem;
+        padding: 0.5rem;
+        font-family: monospace;
+        font-size: 0.85rem;
+        border-bottom: 1px solid #333;
+    }
+
+    .log-entry.lifecycle { color: #4fc3f7; }
+    .log-entry.first-render { color: #81c784; }
+    .log-entry.re-render { color: #aed581; }
+    .log-entry.user-action { color: #ffb74d; }
+    .log-entry.child { color: #ce93d8; }
+    .log-entry.dispose { color: #ef5350; }
+
+    .timestamp {
+        color: #888;
+        min-width: 100px;
+    }
+
+    .method {
+        font-weight: bold;
+        min-width: 180px;
+    }
+
+    .demo-section {
+        background: #f8f9fa;
+        padding: 1.5rem;
+        border-radius: 8px;
+        margin-bottom: 2rem;
+    }
+
+    .demo-section h3 {
+        margin: 0 0 1rem 0;
+    }
+
+    .control-group {
+        margin-bottom: 1rem;
+    }
+
+    .control-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+    }
+
+    .counter-control {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .counter-control button {
+        width: 40px;
+        height: 40px;
+        font-size: 1.5rem;
+        border: none;
+        border-radius: 8px;
+        background: #3498db;
+        color: white;
+        cursor: pointer;
+    }
+
+    .counter-control span {
+        font-size: 1.5rem;
+        font-weight: bold;
+        min-width: 50px;
+        text-align: center;
+    }
+
+    .control-group input {
+        padding: 0.5rem;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        width: 200px;
+    }
+
+    .control-group button {
+        padding: 0.5rem 1rem;
+        border: none;
+        border-radius: 4px;
+        background: #9b59b6;
+        color: white;
+        cursor: pointer;
+    }
+
+    .lifecycle-info {
+        margin-top: 2rem;
+    }
+
+    .info-card {
+        background: white;
+        border: 1px solid #eee;
+        border-radius: 8px;
+        padding: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .info-card h4 {
+        margin: 0 0 0.5rem 0;
+        color: #3498db;
+    }
+
+    .info-card p {
+        margin: 0;
+        color: #666;
+        line-height: 1.5;
+    }
+
+    .btn {
+        padding: 0.5rem 1rem;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .btn-secondary {
+        background: #e0e0e0;
+        color: #333;
+    }
+</style>

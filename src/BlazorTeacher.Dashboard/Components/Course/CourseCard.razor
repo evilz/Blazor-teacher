@@ -1,0 +1,91 @@
+@* 
+    CourseCard.razor
+    A reusable course card component.
+    Demonstrates:
+    - Component parameters
+    - Event callbacks for actions
+    - Cascading parameters (for theme)
+    - Conditional styling
+*@
+
+<div class="course-card @(Course.IsPublished ? "published" : "draft") @ThemeClass">
+    <div class="card-header">
+        <span class="level-badge @Course.Level.ToString().ToLower()">@Course.Level</span>
+        @if (!Course.IsPublished)
+        {
+            <span class="draft-badge">Draft</span>
+        }
+    </div>
+    
+    <div class="card-body">
+        <h3 class="card-title">@Course.Title</h3>
+        <p class="card-description">@TruncateDescription(Course.Description, 100)</p>
+        
+        <div class="card-meta">
+            <div class="meta-item">
+                <span class="meta-icon">👨‍🏫</span>
+                <span>@Course.Instructor</span>
+            </div>
+            <div class="meta-item">
+                <span class="meta-icon">⏱️</span>
+                <span>@Course.DurationInHours hours</span>
+            </div>
+            <div class="meta-item">
+                <span class="meta-icon">📚</span>
+                <span>@Course.LessonCount lessons</span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="card-footer">
+        <span class="price">$@Course.Price.ToString("F2")</span>
+        <div class="card-actions">
+            <button class="btn-icon" title="View" @onclick="() => OnView.InvokeAsync(Course)">👁️</button>
+            <button class="btn-icon" title="Edit" @onclick="() => OnEdit.InvokeAsync(Course)">✏️</button>
+            <button class="btn-icon danger" title="Delete" @onclick="() => OnDelete.InvokeAsync(Course)">🗑️</button>
+        </div>
+    </div>
+</div>
+
+@code {
+    /// <summary>
+    /// The course data to display.
+    /// </summary>
+    [Parameter, EditorRequired]
+    public CourseDto Course { get; set; } = null!;
+
+    /// <summary>
+    /// Cascading parameter for theme support.
+    /// Demonstrates cascading values from parent components.
+    /// </summary>
+    [CascadingParameter(Name = "Theme")]
+    public string? Theme { get; set; }
+
+    /// <summary>
+    /// Event callback when view button is clicked.
+    /// </summary>
+    [Parameter]
+    public EventCallback<CourseDto> OnView { get; set; }
+
+    /// <summary>
+    /// Event callback when edit button is clicked.
+    /// </summary>
+    [Parameter]
+    public EventCallback<CourseDto> OnEdit { get; set; }
+
+    /// <summary>
+    /// Event callback when delete button is clicked.
+    /// </summary>
+    [Parameter]
+    public EventCallback<CourseDto> OnDelete { get; set; }
+
+    private string ThemeClass => Theme == "dark" ? "dark-theme" : "";
+
+    private static string TruncateDescription(string description, int maxLength)
+    {
+        if (string.IsNullOrEmpty(description) || description.Length <= maxLength)
+            return description;
+        
+        return description.Substring(0, maxLength) + "...";
+    }
+}

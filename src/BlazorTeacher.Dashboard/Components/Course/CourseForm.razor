@@ -1,0 +1,174 @@
+@* 
+    CourseForm.razor
+    A form component for creating and editing courses.
+    Demonstrates:
+    - EditForm with validation
+    - Two-way binding with @bind directives
+    - Form events and submission
+    - Component lifecycle (OnParametersSet)
+*@
+
+<EditForm Model="@FormModel" OnValidSubmit="HandleSubmit" class="course-form">
+    <DataAnnotationsValidator />
+    
+    <div class="form-group">
+        <label for="title">Title</label>
+        <InputText id="title" @bind-Value="FormModel.Title" class="form-control" placeholder="Course title" />
+        <ValidationMessage For="@(() => FormModel.Title)" />
+    </div>
+
+    <div class="form-group">
+        <label for="description">Description</label>
+        <InputTextArea id="description" @bind-Value="FormModel.Description" class="form-control" rows="4" placeholder="Course description" />
+        <ValidationMessage For="@(() => FormModel.Description)" />
+    </div>
+
+    <div class="form-row">
+        <div class="form-group">
+            <label for="instructor">Instructor</label>
+            <InputText id="instructor" @bind-Value="FormModel.Instructor" class="form-control" placeholder="Instructor name" />
+            <ValidationMessage For="@(() => FormModel.Instructor)" />
+        </div>
+
+        <div class="form-group">
+            <label for="duration">Duration (hours)</label>
+            <InputNumber id="duration" @bind-Value="FormModel.DurationInHours" class="form-control" />
+            <ValidationMessage For="@(() => FormModel.DurationInHours)" />
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="form-group">
+            <label for="price">Price ($)</label>
+            <InputNumber id="price" @bind-Value="FormModel.Price" class="form-control" step="0.01" />
+            <ValidationMessage For="@(() => FormModel.Price)" />
+        </div>
+
+        <div class="form-group">
+            <label for="level">Level</label>
+            <InputSelect id="level" @bind-Value="FormModel.Level" class="form-control">
+                @foreach (var level in Enum.GetValues<CourseLevel>())
+                {
+                    <option value="@level">@level</option>
+                }
+            </InputSelect>
+            <ValidationMessage For="@(() => FormModel.Level)" />
+        </div>
+    </div>
+
+    @if (IsEditMode)
+    {
+        <div class="form-group checkbox-group">
+            <InputCheckbox id="isPublished" @bind-Value="FormModel.IsPublished" />
+            <label for="isPublished">Published</label>
+        </div>
+    }
+
+    <div class="form-actions">
+        <button type="button" class="btn btn-secondary" @onclick="Cancel">Cancel</button>
+        <button type="submit" class="btn btn-primary" disabled="@IsSubmitting">
+            @if (IsSubmitting)
+            {
+                <span>Saving...</span>
+            }
+            else
+            {
+                <span>@(IsEditMode ? "Update" : "Create")</span>
+            }
+        </button>
+    </div>
+</EditForm>
+
+@code {
+    /// <summary>
+    /// The course to edit, null for creating new.
+    /// </summary>
+    [Parameter]
+    public CourseDto? Course { get; set; }
+
+    /// <summary>
+    /// Event callback when form is submitted successfully.
+    /// </summary>
+    [Parameter]
+    public EventCallback<CourseFormModel> OnSubmit { get; set; }
+
+    /// <summary>
+    /// Event callback when form is cancelled.
+    /// </summary>
+    [Parameter]
+    public EventCallback OnCancel { get; set; }
+
+    private CourseFormModel FormModel { get; set; } = new();
+    private bool IsEditMode => Course != null;
+    private bool IsSubmitting { get; set; }
+
+    /// <summary>
+    /// Lifecycle method - called when parameters change.
+    /// Demonstrates component lifecycle.
+    /// </summary>
+    protected override void OnParametersSet()
+    {
+        if (Course != null)
+        {
+            FormModel = new CourseFormModel
+            {
+                Title = Course.Title,
+                Description = Course.Description,
+                Instructor = Course.Instructor,
+                DurationInHours = Course.DurationInHours,
+                Price = Course.Price,
+                Level = Course.Level,
+                IsPublished = Course.IsPublished
+            };
+        }
+        else
+        {
+            FormModel = new CourseFormModel();
+        }
+    }
+
+    private async Task HandleSubmit()
+    {
+        IsSubmitting = true;
+        try
+        {
+            await OnSubmit.InvokeAsync(FormModel);
+        }
+        finally
+        {
+            IsSubmitting = false;
+        }
+    }
+
+    private async Task Cancel()
+    {
+        await OnCancel.InvokeAsync();
+    }
+
+    /// <summary>
+    /// Form model with validation attributes.
+    /// </summary>
+    public class CourseFormModel
+    {
+        [System.ComponentModel.DataAnnotations.Required(ErrorMessage = "Title is required")]
+        [System.ComponentModel.DataAnnotations.StringLength(200, ErrorMessage = "Title cannot exceed 200 characters")]
+        public string Title { get; set; } = string.Empty;
+
+        [System.ComponentModel.DataAnnotations.StringLength(2000, ErrorMessage = "Description cannot exceed 2000 characters")]
+        public string Description { get; set; } = string.Empty;
+
+        [System.ComponentModel.DataAnnotations.Required(ErrorMessage = "Instructor is required")]
+        [System.ComponentModel.DataAnnotations.StringLength(100, ErrorMessage = "Instructor name cannot exceed 100 characters")]
+        public string Instructor { get; set; } = string.Empty;
+
+        [System.ComponentModel.DataAnnotations.Range(1, 1000, ErrorMessage = "Duration must be between 1 and 1000 hours")]
+        public int DurationInHours { get; set; } = 1;
+
+        [System.ComponentModel.DataAnnotations.Range(0, 10000, ErrorMessage = "Price must be between 0 and 10000")]
+        public decimal Price { get; set; }
+
+        public CourseLevel Level { get; set; } = CourseLevel.Beginner;
+
+        public bool IsPublished { get; set; }
+    }
+}

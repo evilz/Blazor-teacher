@@ -1,0 +1,64 @@
+@* 
+    LifecycleChildComponent.razor
+    A child component to demonstrate lifecycle events in parent-child relationships.
+*@
+
+@implements IDisposable
+
+<div class="child-component">
+    <h4>👶 Child Component</h4>
+    <p>Parameter value: <strong>@Parameter</strong></p>
+    <p>Render count: <strong>@renderCount</strong></p>
+</div>
+
+@code {
+    private int renderCount = 0;
+
+    [Parameter]
+    public string Parameter { get; set; } = "";
+
+    [Parameter]
+    public EventCallback<string> OnLifecycleEvent { get; set; }
+
+    protected override void OnInitialized()
+    {
+        OnLifecycleEvent.InvokeAsync("Child OnInitialized called");
+    }
+
+    protected override void OnParametersSet()
+    {
+        OnLifecycleEvent.InvokeAsync($"Child OnParametersSet - Parameter: '{Parameter}'");
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        renderCount++;
+        if (firstRender)
+        {
+            OnLifecycleEvent.InvokeAsync("Child first render");
+        }
+    }
+
+    public void Dispose()
+    {
+        OnLifecycleEvent.InvokeAsync("Child component disposed");
+    }
+}
+
+<style>
+    .child-component {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 1.5rem;
+        border-radius: 8px;
+        margin: 1rem 0;
+    }
+
+    .child-component h4 {
+        margin: 0 0 1rem 0;
+    }
+
+    .child-component p {
+        margin: 0.5rem 0;
+    }
+</style>
