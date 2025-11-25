@@ -47,6 +47,7 @@ ehthumbs.db
 
 # Node modules (if any)
 node_modules/
+package-lock.json
 
 # Test results
 [Tt]est[Rr]esult*/
