@@ -9,6 +9,15 @@
     <link rel="stylesheet" href="css/tailwind.css" />
     <link rel="stylesheet" href="@Assets["app.css"]" />
     <link rel="stylesheet" href="@Assets["BlazorTeacher.Dashboard.styles.css"]" />
+    
+    <!-- Fira Code font with ligatures -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Prism.js for syntax highlighting -->
+    <link rel="stylesheet" href="lib/prism/prism-tomorrow.min.css" />
+    
     <ImportMap />
     <link rel="icon" type="image/png" href="favicon.png" />
     <HeadOutlet @rendermode="InteractiveServer" />
@@ -18,6 +27,14 @@
     <Routes @rendermode="InteractiveServer" />
     <ReconnectModal />
     <script src="@Assets["_framework/blazor.web.js"]"></script>
+    
+    <!-- Prism.js scripts -->
+    <script src="lib/prism/prism.min.js"></script>
+    <script src="lib/prism/prism-csharp.min.js"></script>
+    <script src="lib/prism/prism-javascript.min.js"></script>
+    <script src="lib/prism/prism-css.min.js"></script>
+    <script src="lib/prism/prism-markup.min.js"></script>
+    <script src="js/prism-init.js"></script>
 </body>
 
 </html>

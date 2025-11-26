@@ -1,8 +1,11 @@
 @page "/tutorial/chapter/{Id:int}"
 @using BlazorTeacher.Shared.Models
+@using Markdig
+@using Microsoft.JSInterop
 @rendermode InteractiveServer
 @inject ChapterService ChapterService
 @inject NavigationManager NavigationManager
+@inject IJSRuntime JSRuntime
 
 <PageTitle>@currentChapter?.Title — Tutorial</PageTitle>
 
@@ -161,6 +164,12 @@
         }
     }
 
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        // Initialize Prism.js syntax highlighting after render
+        await JSRuntime.InvokeVoidAsync("PrismHelper.highlightAll");
+    }
+
     private void PreviousStep()
     {
         if (currentStepIndex > 0)
@@ -261,259 +270,392 @@
         return selected == optIndex ? "selected" : "";
     }
     
-    // Simple markdown renderer helper (replace with real one if available)
+    // Markdown renderer using Markdig with code block support
     private string RenderMarkdown(string markdown)
     {
-        // Very basic replacement for demo purposes
-        var html = markdown
-            .Replace("\n", "<br>")
-            .Replace("**", "<strong>") // Note: this is fragile, real parser needed
-            .Replace("`", "<code>");
+        var pipeline = new MarkdownPipelineBuilder()
+            .UseAdvancedExtensions()
+            .Build();
             
-        // Fix closing tags (hacky)
-        // A real implementation would use Markdig or similar
-        return html; 
+        return Markdown.ToHtml(markdown, pipeline);
     }
 }
 
 <style>
     .chapter-viewer {
-        max-width: 800px;
+        max-width: 1200px;
         margin: 0 auto;
-        padding: 2rem;
-        font-family: 'Segoe UI', system-ui, sans-serif;
+        padding: 2rem 1.5rem;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+        background: #f7f7f7;
+        min-height: 100vh;
     }
 
     .viewer-header {
+        background: white;
         margin-bottom: 2rem;
-        border-bottom: 1px solid #eee;
-        padding-bottom: 1rem;
+        padding: 2rem;
+        border-radius: 16px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
     }
 
     .btn-back {
         background: none;
         border: none;
-        color: #666;
+        color: #222;
         cursor: pointer;
-        padding: 0;
-        font-size: 0.9rem;
-        margin-bottom: 1rem;
+        padding: 0.5rem 0;
+        font-size: 0.95rem;
+        margin-bottom: 1.5rem;
+        font-weight: 500;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
     }
     
     .btn-back:hover {
-        color: #333;
-        text-decoration: underline;
+        color: #000;
+    }
+
+    .chapter-info {
+        margin-bottom: 1.5rem;
     }
 
     .chapter-info h1 {
-        margin: 0.5rem 0;
+        margin: 0.75rem 0 0.5rem;
         font-size: 2rem;
-        color: #2c3e50;
+        color: #222;
+        font-weight: 700;
+        line-height: 1.2;
     }
 
     .chapter-number {
-        text-transform: uppercase;
-        font-size: 0.8rem;
-        letter-spacing: 1px;
-        color: #7f8c8d;
-        font-weight: bold;
+        font-size: 0.875rem;
+        letter-spacing: 0.5px;
+        color: #717171;
+        font-weight: 600;
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        background: #f7f7f7;
+        border-radius: 6px;
     }
 
     .progress-indicator {
-        height: 4px;
-        background: #f0f0f0;
-        margin-top: 1rem;
-        border-radius: 2px;
+        height: 6px;
+        background: #EBEBEB;
+        border-radius: 3px;
         overflow: hidden;
     }
 
     .progress-bar {
         height: 100%;
-        background: #3498db;
-        transition: width 0.3s ease;
+        background: linear-gradient(90deg, #FF385C 0%, #E61E4D 100%);
+        transition: width 0.4s ease;
+        border-radius: 3px;
     }
 
     .step-container {
-        animation: fadeIn 0.3s ease;
+        animation: fadeIn 0.4s ease;
+        background: white;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
     }
 
     .step-header {
-        margin-bottom: 1.5rem;
+        padding: 2rem 2rem 1rem;
+        border-bottom: 1px solid #EBEBEB;
     }
 
     .step-counter {
-        font-size: 0.85rem;
-        color: #95a5a6;
-        font-weight: 500;
+        font-size: 0.875rem;
+        color: #717171;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
     }
 
     .step-header h2 {
-        margin: 0.5rem 0 0;
-        font-size: 1.5rem;
-        color: #34495e;
+        margin: 0.75rem 0 0;
+        font-size: 1.75rem;
+        color: #222;
+        font-weight: 700;
+        line-height: 1.3;
     }
 
     .step-content {
-        font-size: 1.1rem;
-        line-height: 1.7;
-        color: #2c3e50;
-        margin-bottom: 3rem;
-        background: #fff;
+        font-size: 1rem;
+        line-height: 1.75;
+        color: #222;
         padding: 2rem;
-        border-radius: 8px;
-        box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+        background: white;
     }
     
-    .step-content code {
-        background: #f8f9fa;
-        padding: 0.2rem 0.4rem;
-        border-radius: 4px;
-        font-family: monospace;
-        color: #e74c3c;
+    /* Inline code */
+    .step-content code:not([class*="language-"]) {
+        background: #f7f7f7;
+        padding: 0.25rem 0.5rem;
+        border-radius: 6px;
+        font-family: 'Fira Code', 'Courier New', monospace;
+        color: #E61E4D;
+        font-size: 0.9em;
+        font-variant-ligatures: normal;
+        font-feature-settings: "calt" 1, "liga" 1;
+    }
+    
+    /* Code blocks with Prism.js */
+    .step-content pre {
+        margin: 1.5rem 0;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    }
+    
+    .step-content pre[class*="language-"] {
+        margin: 1.5rem 0;
+        padding: 1.5rem;
+        font-family: 'Fira Code', 'Courier New', monospace;
+        font-size: 0.95rem;
+        line-height: 1.6;
+        font-variant-ligatures: normal;
+        font-feature-settings: "calt" 1, "liga" 1;
+        border-radius: 12px;
+        background: #2d2d2d;
+    }
+    
+    .step-content code[class*="language-"] {
+        font-family: 'Fira Code', 'Courier New', monospace;
+        font-variant-ligatures: normal;
+        font-feature-settings: "calt" 1, "liga" 1;
+        text-shadow: none;
+    }
+    
+    /* Better paragraph spacing */
+    .step-content p {
+        margin-bottom: 1rem;
+    }
+    
+    .step-content h1, .step-content h2, .step-content h3 {
+        margin-top: 1.5rem;
+        margin-bottom: 0.75rem;
+        font-weight: 600;
+    }
+    
+    .step-content ul, .step-content ol {
+        margin: 1rem 0;
+        padding-left: 1.5rem;
+    }
+    
+    .step-content li {
+        margin-bottom: 0.5rem;
     }
 
     .step-actions {
         display: flex;
         justify-content: space-between;
-        margin-top: 2rem;
+        padding: 1.5rem 2rem 2rem;
+        background: white;
+        gap: 1rem;
     }
 
     .btn-primary, .btn-secondary, .btn-success, .btn-retry {
-        padding: 0.75rem 1.5rem;
-        border-radius: 6px;
+        padding: 0.875rem 1.75rem;
+        border-radius: 8px;
         font-weight: 600;
         cursor: pointer;
         border: none;
-        transition: all 0.2s;
+        transition: all 0.2s ease;
+        font-size: 1rem;
+        font-family: inherit;
     }
 
     .btn-primary {
-        background: #3498db;
+        background: #222;
         color: white;
     }
     
     .btn-primary:hover:not(:disabled) {
-        background: #2980b9;
-        transform: translateY(-1px);
+        background: #000;
+        transform: scale(1.02);
     }
     
     .btn-primary:disabled {
-        background: #bdc3c7;
+        background: #EBEBEB;
+        color: #B0B0B0;
         cursor: not-allowed;
     }
 
     .btn-secondary {
-        background: #ecf0f1;
-        color: #7f8c8d;
+        background: white;
+        color: #222;
+        border: 1px solid #222;
     }
     
     .btn-secondary:hover:not(:disabled) {
-        background: #bdc3c7;
-        color: #2c3e50;
+        background: #f7f7f7;
     }
     
     .btn-secondary:disabled {
-        opacity: 0.5;
+        opacity: 0.4;
         cursor: not-allowed;
     }
     
     .btn-success {
-        background: #27ae60;
+        background: linear-gradient(90deg, #00A699 0%, #00C4B4 100%);
         color: white;
     }
     
     .btn-success:hover {
-        background: #219150;
+        transform: scale(1.02);
+        box-shadow: 0 4px 12px rgba(0, 166, 153, 0.3);
     }
     
     .btn-retry {
-        background: #f39c12;
+        background: #FF385C;
         color: white;
+    }
+    
+    .btn-retry:hover {
+        background: #E61E4D;
+        transform: scale(1.02);
     }
 
     .quiz-section {
-        background: #fff;
-        padding: 2rem;
-        border-radius: 12px;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        background: white;
+        padding: 2.5rem;
+        border-radius: 16px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    }
+    
+    .quiz-section h2 {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: #222;
+        margin: 0 0 0.5rem;
+    }
+    
+    .quiz-section > p {
+        color: #717171;
+        font-size: 1rem;
+        margin-bottom: 2rem;
     }
     
     .quiz-question {
-        margin-bottom: 2rem;
-        padding-bottom: 2rem;
-        border-bottom: 1px solid #f0f0f0;
+        margin-bottom: 2.5rem;
+        padding-bottom: 2.5rem;
+        border-bottom: 1px solid #EBEBEB;
     }
     
-    .quiz-question:last-child {
+    .quiz-question:last-of-type {
         border-bottom: none;
+        margin-bottom: 2rem;
     }
     
     .quiz-question h3 {
-        font-size: 1.1rem;
-        margin-bottom: 1rem;
+        font-size: 1.125rem;
+        margin-bottom: 1.25rem;
+        color: #222;
+        font-weight: 600;
+        line-height: 1.5;
     }
     
     .options {
         display: flex;
         flex-direction: column;
-        gap: 0.5rem;
+        gap: 0.75rem;
     }
     
     .btn-option {
         text-align: left;
-        padding: 1rem;
-        background: #f8f9fa;
+        padding: 1.125rem 1.25rem;
+        background: #f7f7f7;
         border: 2px solid transparent;
-        border-radius: 8px;
+        border-radius: 12px;
         cursor: pointer;
-        transition: all 0.2s;
+        transition: all 0.2s ease;
         font-size: 1rem;
+        color: #222;
+        font-weight: 500;
+        font-family: inherit;
     }
     
     .btn-option:hover:not(:disabled) {
-        background: #e9ecef;
+        background: #EBEBEB;
+        border-color: #222;
     }
     
     .btn-option.selected {
-        border-color: #3498db;
-        background: #ebf5fb;
-        color: #2980b9;
+        border-color: #222;
+        background: white;
+        color: #222;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     }
     
     .btn-option.correct {
-        border-color: #27ae60;
-        background: #eafaf1;
-        color: #27ae60;
+        border-color: #00A699;
+        background: #E8FBF9;
+        color: #00A699;
     }
     
     .btn-option.wrong {
-        border-color: #e74c3c;
-        background: #fdedec;
-        color: #c0392b;
+        border-color: #FF385C;
+        background: #FFE8ED;
+        color: #E61E4D;
     }
     
     .btn-option.dimmed {
-        opacity: 0.6;
+        opacity: 0.5;
     }
     
     .explanation {
         margin-top: 1rem;
-        padding: 1rem;
-        border-radius: 6px;
-        background: #f8f9fa;
+        padding: 1.125rem;
+        border-radius: 12px;
+        background: #f7f7f7;
         font-size: 0.95rem;
+        color: #222;
+        line-height: 1.6;
     }
     
     .explanation.correct {
-        border-left: 4px solid #27ae60;
+        border-left: 4px solid #00A699;
+        background: #E8FBF9;
     }
     
     .explanation.incorrect {
-        border-left: 4px solid #e74c3c;
+        border-left: 4px solid #FF385C;
+        background: #FFE8ED;
+    }
+    
+    .quiz-actions {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        padding-top: 1rem;
+    }
+    
+    .loading, .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        background: white;
+        border-radius: 16px;
+        color: #717171;
+        font-size: 1.125rem;
+    }
+    
+    .empty-state p {
+        margin-bottom: 2rem;
+        color: #717171;
     }
     
     @@keyframes fadeIn {
-        from { opacity: 0; transform: translateY(10px); }
-        to { opacity: 1; transform: translateY(0); }
+        from { 
+            opacity: 0; 
+            transform: translateY(20px); 
+        }
+        to { 
+            opacity: 1; 
+            transform: translateY(0); 
+        }
     }
 </style>
