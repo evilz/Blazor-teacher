@@ -8,68 +8,88 @@
     - Component lifecycle (OnParametersSet)
 *@
 
-<EditForm Model="@FormModel" OnValidSubmit="HandleSubmit" class="course-form">
+<EditForm Model="@FormModel" OnValidSubmit="HandleSubmit" class="space-y-5">
     <DataAnnotationsValidator />
     
-    <div class="form-group">
-        <label for="title">Title</label>
-        <InputText id="title" @bind-Value="FormModel.Title" class="form-control" placeholder="Course title" />
-        <ValidationMessage For="@(() => FormModel.Title)" />
+    <div>
+        <label for="title" class="block text-sm font-medium text-slate-700">Title</label>
+        <InputText id="title" @bind-Value="FormModel.Title" 
+                   class="mt-1.5 block w-full rounded-lg border-0 py-2.5 px-3.5 text-slate-900 ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-primary-600 sm:text-sm" 
+                   placeholder="Course title" />
+        <ValidationMessage For="@(() => FormModel.Title)" class="mt-1 text-sm text-red-600" />
     </div>
 
-    <div class="form-group">
-        <label for="description">Description</label>
-        <InputTextArea id="description" @bind-Value="FormModel.Description" class="form-control" rows="4" placeholder="Course description" />
-        <ValidationMessage For="@(() => FormModel.Description)" />
+    <div>
+        <label for="description" class="block text-sm font-medium text-slate-700">Description</label>
+        <InputTextArea id="description" @bind-Value="FormModel.Description" rows="4"
+                       class="mt-1.5 block w-full rounded-lg border-0 py-2.5 px-3.5 text-slate-900 ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-primary-600 sm:text-sm" 
+                       placeholder="Course description" />
+        <ValidationMessage For="@(() => FormModel.Description)" class="mt-1 text-sm text-red-600" />
     </div>
 
-    <div class="form-row">
-        <div class="form-group">
-            <label for="instructor">Instructor</label>
-            <InputText id="instructor" @bind-Value="FormModel.Instructor" class="form-control" placeholder="Instructor name" />
-            <ValidationMessage For="@(() => FormModel.Instructor)" />
+    <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+        <div>
+            <label for="instructor" class="block text-sm font-medium text-slate-700">Instructor</label>
+            <InputText id="instructor" @bind-Value="FormModel.Instructor" 
+                       class="mt-1.5 block w-full rounded-lg border-0 py-2.5 px-3.5 text-slate-900 ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-primary-600 sm:text-sm" 
+                       placeholder="Instructor name" />
+            <ValidationMessage For="@(() => FormModel.Instructor)" class="mt-1 text-sm text-red-600" />
         </div>
 
-        <div class="form-group">
-            <label for="duration">Duration (hours)</label>
-            <InputNumber id="duration" @bind-Value="FormModel.DurationInHours" class="form-control" />
-            <ValidationMessage For="@(() => FormModel.DurationInHours)" />
+        <div>
+            <label for="duration" class="block text-sm font-medium text-slate-700">Duration (hours)</label>
+            <InputNumber id="duration" @bind-Value="FormModel.DurationInHours" 
+                         class="mt-1.5 block w-full rounded-lg border-0 py-2.5 px-3.5 text-slate-900 ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-primary-600 sm:text-sm" />
+            <ValidationMessage For="@(() => FormModel.DurationInHours)" class="mt-1 text-sm text-red-600" />
         </div>
     </div>
 
-    <div class="form-row">
-        <div class="form-group">
-            <label for="price">Price ($)</label>
-            <InputNumber id="price" @bind-Value="FormModel.Price" class="form-control" step="0.01" />
-            <ValidationMessage For="@(() => FormModel.Price)" />
+    <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+        <div>
+            <label for="price" class="block text-sm font-medium text-slate-700">Price ($)</label>
+            <InputNumber id="price" @bind-Value="FormModel.Price" step="0.01"
+                         class="mt-1.5 block w-full rounded-lg border-0 py-2.5 px-3.5 text-slate-900 ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-primary-600 sm:text-sm" />
+            <ValidationMessage For="@(() => FormModel.Price)" class="mt-1 text-sm text-red-600" />
         </div>
 
-        <div class="form-group">
-            <label for="level">Level</label>
-            <InputSelect id="level" @bind-Value="FormModel.Level" class="form-control">
+        <div>
+            <label for="level" class="block text-sm font-medium text-slate-700">Level</label>
+            <InputSelect id="level" @bind-Value="FormModel.Level" 
+                         class="mt-1.5 block w-full rounded-lg border-0 py-2.5 px-3.5 text-slate-900 ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-inset focus:ring-primary-600 sm:text-sm">
                 @foreach (var level in Enum.GetValues<CourseLevel>())
                 {
                     <option value="@level">@level</option>
                 }
             </InputSelect>
-            <ValidationMessage For="@(() => FormModel.Level)" />
+            <ValidationMessage For="@(() => FormModel.Level)" class="mt-1 text-sm text-red-600" />
         </div>
     </div>
 
     @if (IsEditMode)
     {
-        <div class="form-group checkbox-group">
-            <InputCheckbox id="isPublished" @bind-Value="FormModel.IsPublished" />
-            <label for="isPublished">Published</label>
+        <div class="flex items-center gap-3">
+            <InputCheckbox id="isPublished" @bind-Value="FormModel.IsPublished" 
+                           class="h-4 w-4 rounded border-slate-300 text-primary-600 focus:ring-primary-600" />
+            <label for="isPublished" class="text-sm font-medium text-slate-700">Published</label>
         </div>
     }
 
-    <div class="form-actions">
-        <button type="button" class="btn btn-secondary" @onclick="Cancel">Cancel</button>
-        <button type="submit" class="btn btn-primary" disabled="@IsSubmitting">
+    <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-200">
+        <button type="button" @onclick="Cancel" 
+                class="rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50 transition-colors">
+            Cancel
+        </button>
+        <button type="submit" disabled="@IsSubmitting" 
+                class="rounded-lg bg-primary-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
             @if (IsSubmitting)
             {
-                <span>Saving...</span>
+                <span class="flex items-center gap-2">
+                    <svg class="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Saving...
+                </span>
             }
             else
             {

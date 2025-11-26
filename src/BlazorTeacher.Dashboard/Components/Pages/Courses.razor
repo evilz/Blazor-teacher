@@ -17,54 +17,102 @@
 
 @* Cascading parameter to provide theme to child components *@
 <CascadingValue Name="Theme" Value="@AppState.CurrentTheme">
-    <div class="courses-page">
-        <header class="page-header">
-            <div class="header-content">
-                <h1>📚 Course Dashboard</h1>
-                <p>Manage your courses with full CRUD operations</p>
+    <div class="space-y-6">
+        <!-- Page Header -->
+        <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+                <h1 class="text-2xl font-bold text-slate-900 sm:text-3xl">Course Dashboard</h1>
+                <p class="mt-1 text-sm text-slate-500">Manage your courses with full CRUD operations</p>
             </div>
-            <div class="header-actions">
-                <button class="btn btn-theme" @onclick="ToggleTheme">
-                    @(AppState.CurrentTheme == "light" ? "🌙" : "☀️") Theme
+            <div class="flex items-center gap-3">
+                <button @onclick="ToggleTheme" 
+                        class="inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50 transition-colors">
+                    @if (AppState.CurrentTheme == "light")
+                    {
+                        <svg class="h-5 w-5 mr-2 text-slate-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
+                        </svg>
+                    }
+                    else
+                    {
+                        <svg class="h-5 w-5 mr-2 text-amber-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
+                        </svg>
+                    }
+                    Theme
                 </button>
-                <button class="btn btn-primary" @onclick="ShowCreateForm">
-                    ➕ New Course
+                <button @onclick="ShowCreateForm" 
+                        class="inline-flex items-center justify-center rounded-lg bg-primary-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-primary-700 transition-colors">
+                    <svg class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                    </svg>
+                    New Course
                 </button>
             </div>
-        </header>
+        </div>
 
         @if (!string.IsNullOrEmpty(alertMessage))
         {
             <AlertMessage Message="@alertMessage" Type="@alertType" OnDismiss="DismissAlert" />
         }
 
-        <div class="filters-section">
-            <div class="search-box">
-                <input type="text" 
-                       placeholder="Search courses..." 
-                       @bind="searchTerm" 
-                       @bind:event="oninput"
-                       @onkeyup="HandleSearchKeyUp" />
-                <button class="btn btn-search" @onclick="SearchCourses">🔍</button>
-            </div>
-            
-            <div class="filter-controls">
-                <select @bind="selectedLevel" @bind:event="onchange" class="filter-select">
-                    <option value="">All Levels</option>
-                    @foreach (var level in Enum.GetValues<CourseLevel>())
-                    {
-                        <option value="@level">@level</option>
-                    }
-                </select>
+        <!-- Filters Section -->
+        <div class="rounded-xl bg-white p-4 shadow-sm ring-1 ring-slate-200 sm:p-6">
+            <div class="flex flex-col gap-4 lg:flex-row lg:items-end">
+                <!-- Search Box -->
+                <div class="flex-1">
+                    <label for="search" class="block text-sm font-medium text-slate-700 mb-1.5">Search</label>
+                    <div class="relative">
+                        <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                            <svg class="h-5 w-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+                            </svg>
+                        </div>
+                        <input type="text" 
+                               id="search"
+                               placeholder="Search courses..." 
+                               @bind="searchTerm" 
+                               @bind:event="oninput"
+                               @onkeyup="HandleSearchKeyUp"
+                               class="block w-full rounded-lg border-0 py-2.5 pl-10 pr-4 text-slate-900 ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-primary-600 sm:text-sm" />
+                    </div>
+                </div>
                 
-                <select @bind="selectedPublished" @bind:event="onchange" class="filter-select">
-                    <option value="">All Status</option>
-                    <option value="true">Published</option>
-                    <option value="false">Draft</option>
-                </select>
+                <!-- Level Filter -->
+                <div class="w-full sm:w-48">
+                    <label for="level" class="block text-sm font-medium text-slate-700 mb-1.5">Level</label>
+                    <select id="level" @bind="selectedLevel" @bind:event="onchange" 
+                            class="block w-full rounded-lg border-0 py-2.5 pl-3 pr-10 text-slate-900 ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-primary-600 sm:text-sm">
+                        <option value="">All Levels</option>
+                        @foreach (var level in Enum.GetValues<CourseLevel>())
+                        {
+                            <option value="@level">@level</option>
+                        }
+                    </select>
+                </div>
                 
-                <button class="btn btn-secondary" @onclick="ClearFilters">Clear</button>
-                <button class="btn btn-primary" @onclick="ApplyFilters">Apply</button>
+                <!-- Status Filter -->
+                <div class="w-full sm:w-48">
+                    <label for="status" class="block text-sm font-medium text-slate-700 mb-1.5">Status</label>
+                    <select id="status" @bind="selectedPublished" @bind:event="onchange"
+                            class="block w-full rounded-lg border-0 py-2.5 pl-3 pr-10 text-slate-900 ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-primary-600 sm:text-sm">
+                        <option value="">All Status</option>
+                        <option value="true">Published</option>
+                        <option value="false">Draft</option>
+                    </select>
+                </div>
+                
+                <!-- Filter Buttons -->
+                <div class="flex items-center gap-2">
+                    <button @onclick="ClearFilters" 
+                            class="rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50 transition-colors">
+                        Clear
+                    </button>
+                    <button @onclick="ApplyFilters" 
+                            class="rounded-lg bg-primary-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-primary-700 transition-colors">
+                        Apply
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -79,13 +127,21 @@
         @* Course Form Modal *@
         @if (showForm)
         {
-            <div class="modal-overlay" @onclick="CloseForm">
-                <div class="modal-content" @onclick:stopPropagation>
-                    <h2>@(editingCourse == null ? "Create New Course" : "Edit Course")</h2>
-                    <CourseForm 
-                        Course="@editingCourse"
-                        OnSubmit="HandleFormSubmit"
-                        OnCancel="CloseForm" />
+            <div class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+                <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+                    <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" @onclick="CloseForm"></div>
+                    <div class="relative transform overflow-hidden rounded-xl bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6" @onclick:stopPropagation>
+                        <div class="mb-5">
+                            <h3 class="text-lg font-semibold leading-6 text-slate-900" id="modal-title">
+                                @(editingCourse == null ? "Create New Course" : "Edit Course")
+                            </h3>
+                            <p class="mt-1 text-sm text-slate-500">Fill in the details below to @(editingCourse == null ? "create a new" : "update the") course.</p>
+                        </div>
+                        <CourseForm 
+                            Course="@editingCourse"
+                            OnSubmit="HandleFormSubmit"
+                            OnCancel="CloseForm" />
+                    </div>
                 </div>
             </div>
         }
@@ -93,40 +149,67 @@
         @* Course Detail Modal *@
         @if (viewingCourse != null)
         {
-            <div class="modal-overlay" @onclick="CloseViewModal">
-                <div class="modal-content detail-modal" @onclick:stopPropagation>
-                    <h2>@viewingCourse.Title</h2>
-                    <div class="course-detail">
-                        <div class="detail-row">
-                            <span class="label">Instructor:</span>
-                            <span class="value">@viewingCourse.Instructor</span>
+            <div class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="detail-modal-title" role="dialog" aria-modal="true">
+                <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+                    <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" @onclick="CloseViewModal"></div>
+                    <div class="relative transform overflow-hidden rounded-xl bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-md sm:p-6" @onclick:stopPropagation>
+                        <div class="mb-6">
+                            <h3 class="text-xl font-semibold leading-6 text-slate-900" id="detail-modal-title">
+                                @viewingCourse.Title
+                            </h3>
                         </div>
-                        <div class="detail-row">
-                            <span class="label">Level:</span>
-                            <span class="value badge @viewingCourse.Level.ToString().ToLower()">@viewingCourse.Level</span>
-                        </div>
-                        <div class="detail-row">
-                            <span class="label">Duration:</span>
-                            <span class="value">@viewingCourse.DurationInHours hours</span>
-                        </div>
-                        <div class="detail-row">
-                            <span class="label">Price:</span>
-                            <span class="value price">$@viewingCourse.Price.ToString("F2")</span>
-                        </div>
-                        <div class="detail-row">
-                            <span class="label">Status:</span>
-                            <span class="value">@(viewingCourse.IsPublished ? "Published" : "Draft")</span>
-                        </div>
-                        <div class="detail-row">
-                            <span class="label">Lessons:</span>
-                            <span class="value">@viewingCourse.LessonCount</span>
-                        </div>
-                        <div class="detail-row full-width">
-                            <span class="label">Description:</span>
-                            <p class="description">@viewingCourse.Description</p>
+                        
+                        <dl class="space-y-4">
+                            <div class="flex justify-between">
+                                <dt class="text-sm font-medium text-slate-500">Instructor</dt>
+                                <dd class="text-sm text-slate-900">@viewingCourse.Instructor</dd>
+                            </div>
+                            <div class="flex justify-between">
+                                <dt class="text-sm font-medium text-slate-500">Level</dt>
+                                <dd>
+                                    <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium @GetLevelBadgeClasses(viewingCourse.Level)">
+                                        @viewingCourse.Level
+                                    </span>
+                                </dd>
+                            </div>
+                            <div class="flex justify-between">
+                                <dt class="text-sm font-medium text-slate-500">Duration</dt>
+                                <dd class="text-sm text-slate-900">@viewingCourse.DurationInHours hours</dd>
+                            </div>
+                            <div class="flex justify-between">
+                                <dt class="text-sm font-medium text-slate-500">Price</dt>
+                                <dd class="text-sm font-semibold text-primary-600">$@viewingCourse.Price.ToString("F2")</dd>
+                            </div>
+                            <div class="flex justify-between">
+                                <dt class="text-sm font-medium text-slate-500">Status</dt>
+                                <dd>
+                                    @if (viewingCourse.IsPublished)
+                                    {
+                                        <span class="inline-flex items-center rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-medium text-emerald-700">Published</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="inline-flex items-center rounded-full bg-amber-50 px-2.5 py-0.5 text-xs font-medium text-amber-700">Draft</span>
+                                    }
+                                </dd>
+                            </div>
+                            <div class="flex justify-between">
+                                <dt class="text-sm font-medium text-slate-500">Lessons</dt>
+                                <dd class="text-sm text-slate-900">@viewingCourse.LessonCount</dd>
+                            </div>
+                            <div class="pt-2 border-t border-slate-100">
+                                <dt class="text-sm font-medium text-slate-500 mb-2">Description</dt>
+                                <dd class="text-sm text-slate-700 leading-relaxed">@viewingCourse.Description</dd>
+                            </div>
+                        </dl>
+                        
+                        <div class="mt-6">
+                            <button @onclick="CloseViewModal" 
+                                    class="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50 transition-colors">
+                                Close
+                            </button>
                         </div>
                     </div>
-                    <button class="btn btn-secondary" @onclick="CloseViewModal">Close</button>
                 </div>
             </div>
         }
@@ -326,194 +409,16 @@
         alertMessage = null;
     }
 
+    private string GetLevelBadgeClasses(CourseLevel level) => level switch
+    {
+        CourseLevel.Beginner => "bg-emerald-50 text-emerald-700",
+        CourseLevel.Intermediate => "bg-amber-50 text-amber-700",
+        CourseLevel.Advanced => "bg-rose-50 text-rose-700",
+        _ => "bg-slate-50 text-slate-700"
+    };
+
     public void Dispose()
     {
         AppState.OnChange -= StateHasChanged;
     }
 }
-
-<style>
-    .courses-page {
-        padding: 1.5rem;
-        max-width: 1400px;
-        margin: 0 auto;
-    }
-
-    .page-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 2rem;
-        flex-wrap: wrap;
-        gap: 1rem;
-    }
-
-    .header-content h1 {
-        margin: 0;
-        font-size: 1.8rem;
-        color: #333;
-    }
-
-    .header-content p {
-        margin: 0.25rem 0 0 0;
-        color: #666;
-    }
-
-    .header-actions {
-        display: flex;
-        gap: 0.75rem;
-    }
-
-    .filters-section {
-        background: #f8f9fa;
-        padding: 1rem;
-        border-radius: 8px;
-        margin-bottom: 1.5rem;
-        display: flex;
-        flex-wrap: wrap;
-        gap: 1rem;
-        align-items: center;
-    }
-
-    .search-box {
-        display: flex;
-        flex: 1;
-        min-width: 200px;
-    }
-
-    .search-box input {
-        flex: 1;
-        padding: 0.5rem 1rem;
-        border: 1px solid #ddd;
-        border-radius: 6px 0 0 6px;
-        font-size: 0.9rem;
-    }
-
-    .btn-search {
-        border-radius: 0 6px 6px 0;
-        border: 1px solid #ddd;
-        border-left: none;
-        background: white;
-        padding: 0.5rem 1rem;
-    }
-
-    .filter-controls {
-        display: flex;
-        gap: 0.5rem;
-        flex-wrap: wrap;
-    }
-
-    .filter-select {
-        padding: 0.5rem;
-        border: 1px solid #ddd;
-        border-radius: 6px;
-        font-size: 0.9rem;
-        min-width: 120px;
-    }
-
-    .btn {
-        padding: 0.5rem 1rem;
-        border: none;
-        border-radius: 6px;
-        cursor: pointer;
-        font-size: 0.9rem;
-        transition: background-color 0.2s;
-    }
-
-    .btn-primary {
-        background-color: #3498db;
-        color: white;
-    }
-
-    .btn-primary:hover {
-        background-color: #2980b9;
-    }
-
-    .btn-secondary {
-        background-color: #e0e0e0;
-        color: #333;
-    }
-
-    .btn-theme {
-        background-color: #9b59b6;
-        color: white;
-    }
-
-    .modal-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(0, 0, 0, 0.5);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 1000;
-    }
-
-    .modal-content {
-        background: white;
-        padding: 2rem;
-        border-radius: 12px;
-        max-width: 600px;
-        width: 90%;
-        max-height: 90vh;
-        overflow-y: auto;
-    }
-
-    .modal-content h2 {
-        margin: 0 0 1.5rem 0;
-    }
-
-    .detail-modal {
-        max-width: 500px;
-    }
-
-    .course-detail {
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
-        margin-bottom: 1.5rem;
-    }
-
-    .detail-row {
-        display: flex;
-        gap: 1rem;
-    }
-
-    .detail-row.full-width {
-        flex-direction: column;
-    }
-
-    .detail-row .label {
-        font-weight: 600;
-        color: #555;
-        min-width: 100px;
-    }
-
-    .detail-row .value {
-        color: #333;
-    }
-
-    .detail-row .price {
-        font-weight: 700;
-        color: #3498db;
-    }
-
-    .detail-row .description {
-        margin: 0.5rem 0 0 0;
-        line-height: 1.6;
-        color: #666;
-    }
-
-    .badge {
-        padding: 0.25rem 0.5rem;
-        border-radius: 4px;
-        font-size: 0.8rem;
-    }
-
-    .badge.beginner { background: #e8f5e9; color: #2e7d32; }
-    .badge.intermediate { background: #fff3e0; color: #ef6c00; }
-    .badge.advanced { background: #fce4ec; color: #c2185b; }
-</style>
