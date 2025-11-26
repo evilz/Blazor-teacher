@@ -39,19 +39,67 @@ public class ChapterService
                     new ChapterStep 
                     { 
                         Title = "Welcome to the Course", 
-                        Content = "Welcome! In this course, we will build a complete **.NET 10** application from scratch. We'll start with a robust **Minimal API**, connect it to a **SQLite** database using **EF Core**, and then build a beautiful **Blazor Server** dashboard to manage the data. By the end, you'll have a production-ready full-stack architecture.",
+                        Content = @"Welcome! In this course, we will build a complete **.NET 10** application from scratch. 
+
+We'll start with a robust **Minimal API**, connect it to a **SQLite** database using **EF Core**, and then build a beautiful **Blazor Server** dashboard to manage the data. 
+
+By the end, you'll have a production-ready full-stack architecture.
+
+Here's a preview of what a minimal API looks like:
+
+```csharp
+var builder = WebApplication.CreateBuilder(args);
+var app = builder.Build();
+
+app.MapGet(""/api/hello"", () => ""Hello World"");
+
+app.Run();
+```
+
+Pretty simple, right? Let's get started!",
                         Type = StepType.Read
                     },
                     new ChapterStep 
                     { 
                         Title = "The Architecture", 
-                        Content = "We will use a **Clean Architecture** approach:\n\n1. **Domain**: The core entities and business logic (no dependencies).\n2. **Infrastructure**: Database access and external services.\n3. **Api**: The REST API layer.\n4. **Web**: The Blazor dashboard UI.\n\nThis separation ensures our code is maintainable and testable.",
+                        Content = @"We will use a **Clean Architecture** approach:
+
+1. **Domain**: The core entities and business logic (no dependencies).
+2. **Infrastructure**: Database access and external services.
+3. **Api**: The REST API layer.
+4. **Web**: The Blazor dashboard UI.
+
+This separation ensures our code is maintainable and testable.
+
+Here's how the project structure looks:
+
+```
+BlazorTeacher/
+├── BlazorTeacher.Domain/
+│   └── Models/
+├── BlazorTeacher.Infrastructure/
+│   └── Data/
+├── BlazorTeacher.Api/
+│   └── Program.cs
+└── BlazorTeacher.Web/
+    └── Components/
+```",
                         Type = StepType.Read
                     },
                     new ChapterStep 
                     { 
                         Title = "Prerequisites Check", 
-                        Content = "Before we begin, ensure you have the **.NET 10 SDK** installed. Open your terminal and run `dotnet --version`. If you see `10.0.xxx`, you are ready to go!",
+                        Content = @"Before we begin, ensure you have the **.NET 10 SDK** installed. 
+
+Open your terminal and run the following command:
+
+```bash
+dotnet --version
+```
+
+If you see `10.0.xxx`, you are ready to go! 
+
+If not, download and install it from [Microsoft's official site](https://dotnet.microsoft.com/).",
                         Type = StepType.Action
                     }
                 },
@@ -195,9 +243,71 @@ public class ChapterService
                 },
                 Steps = new List<ChapterStep>
                 {
-                    new ChapterStep { Title = "Create Endpoint", Content = "In `Program.cs`, add `app.MapGet(\"/hello\", () => \"Hello World\");`.", Type = StepType.Action },
-                    new ChapterStep { Title = "Run API", Content = "Run `dotnet run` in the Api project folder.", Type = StepType.Action },
-                    new ChapterStep { Title = "Test", Content = "Open browser to `localhost:xxxx/hello`.", Type = StepType.Action }
+                    new ChapterStep 
+                    { 
+                        Title = "Create Endpoint", 
+                        Content = @"Let's create your first API endpoint! 
+
+In `Program.cs`, add the following code:
+
+```csharp
+app.MapGet(""/hello"", () => ""Hello World"");
+```
+
+This creates a simple GET endpoint at `/hello` that returns ""Hello World"".
+
+You can also return JSON objects:
+
+```csharp
+app.MapGet(""/api/info"", () => new { 
+    Name = ""BlazorTeacher API"", 
+    Version = ""1.0"",
+    Status = ""Running""
+});
+```",
+                        Type = StepType.Action 
+                    },
+                    new ChapterStep 
+                    { 
+                        Title = "Run API", 
+                        Content = @"Now let's run the API!
+
+Open your terminal in the Api project folder and run:
+
+```bash
+dotnet run
+```
+
+You should see output similar to this:
+
+```
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://localhost:5000
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+```",
+                        Type = StepType.Action 
+                    },
+                    new ChapterStep 
+                    { 
+                        Title = "Test", 
+                        Content = @"Open your browser and navigate to:
+
+```
+http://localhost:5000/hello
+```
+
+You should see ""Hello World"" displayed in your browser!
+
+You can also test with curl:
+
+```bash
+curl http://localhost:5000/hello
+```
+
+Or use Postman/Thunder Client for more advanced testing.",
+                        Type = StepType.Action 
+                    }
                 },
                 Quiz = new Quiz { Questions = new List<QuizQuestion> { new QuizQuestion { Text = "What method creates a GET endpoint?", Options = new List<string> { "MapPost", "MapGet", "MapPut", "Get" }, CorrectOptionIndex = 1, Explanation = "MapGet creates a GET endpoint." } } }
             },
