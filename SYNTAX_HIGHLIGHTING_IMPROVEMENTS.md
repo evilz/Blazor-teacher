@@ -107,5 +107,5 @@ Le code est maintenant affiché avec :
 - 🔤 Police monospace avec ligatures (Fira Code)
 - 🎨 Thème sombre élégant (Tomorrow Night)
 - 📦 Support de multiples langages
-- 🚀 Rendu optimisé et performant
+- 🚀 Rendu moderne avec bonnes performances (optimisation possible)
 
