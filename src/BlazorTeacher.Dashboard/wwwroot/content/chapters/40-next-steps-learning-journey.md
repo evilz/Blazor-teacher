@@ -141,8 +141,12 @@ Connect with other .NET developers:
 
 ```csharp
 // Check current runtime version in code
-Console.WriteLine($".NET Version: {Environment.Version}");
-Console.WriteLine($"Runtime: {System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription}");
+using System.Runtime.InteropServices;
+
+// FrameworkDescription gives the full .NET version
+Console.WriteLine($"Runtime: {RuntimeInformation.FrameworkDescription}");
+Console.WriteLine($"OS: {RuntimeInformation.OSDescription}");
+Console.WriteLine($"Architecture: {RuntimeInformation.ProcessArchitecture}");
 ```
 
 **Using Latest Features**
