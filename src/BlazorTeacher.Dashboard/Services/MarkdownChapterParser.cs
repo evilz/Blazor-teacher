@@ -196,7 +196,7 @@ public static partial class MarkdownChapterParser
         return result;
     }
 
-    private static ChapterStep ParseStep(in (string Title, string Content) section)
+    private static ChapterStep ParseStep((string Title, string Content) section)
     {
         var step = new ChapterStep();
         
@@ -224,7 +224,7 @@ public static partial class MarkdownChapterParser
                 typeLinePassed = true;
                 continue;
             }
-            if (typeLinePassed || !line.TrimStart().StartsWith("**Type:"))
+            if (typeLinePassed)
             {
                 contentBuilder.Add(line);
             }
@@ -280,31 +280,32 @@ public static partial class MarkdownChapterParser
     private static QuizQuestion ParseQuestion(string content)
     {
         var question = new QuizQuestion();
-        var lines = content.Split('\n').Select(l => l.Trim()).ToList();
+        var lines = content.Split('\n');
         
         // First non-empty line is the question text
         var textLines = new List<string>();
         var optionStartIndex = 0;
         
-        for (int i = 0; i < lines.Count; i++)
+        for (int i = 0; i < lines.Length; i++)
         {
-            if (lines[i].StartsWith("- "))
+            var trimmedLine = lines[i].Trim();
+            if (trimmedLine.StartsWith("- "))
             {
                 optionStartIndex = i;
                 break;
             }
-            if (!string.IsNullOrWhiteSpace(lines[i]))
+            if (!string.IsNullOrWhiteSpace(trimmedLine))
             {
-                textLines.Add(lines[i]);
+                textLines.Add(trimmedLine);
             }
         }
         
         question.Text = string.Join(' ', textLines);
         
         // Parse options
-        for (int i = optionStartIndex; i < lines.Count; i++)
+        for (int i = optionStartIndex; i < lines.Length; i++)
         {
-            var line = lines[i];
+            var line = lines[i].Trim();
             if (line.StartsWith("- "))
             {
                 question.Options.Add(line[2..].Trim().Trim('"'));

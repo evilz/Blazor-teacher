@@ -1,5 +1,6 @@
 using System.Collections.Concurrent;
 using BlazorTeacher.Shared.Models;
+using Microsoft.Extensions.Logging;
 
 namespace BlazorTeacher.Dashboard.Services;
 
@@ -11,14 +12,16 @@ public class ChapterService
 {
     private readonly ConcurrentDictionary<int, ChapterProgress> _progressCache = new();
     private readonly IWebHostEnvironment _environment;
+    private readonly ILogger<ChapterService> _logger;
     private List<Chapter>? _chaptersCache;
     private readonly object _cacheLock = new();
     
     public event Action? OnProgressChanged;
 
-    public ChapterService(IWebHostEnvironment environment)
+    public ChapterService(IWebHostEnvironment environment, ILogger<ChapterService> logger)
     {
         _environment = environment;
+        _logger = logger;
     }
 
     /// <summary>
@@ -79,7 +82,7 @@ public class ChapterService
             catch (Exception ex)
             {
                 // Log error but continue loading other chapters
-                Console.Error.WriteLine($"Error loading chapter from {filePath}: {ex.Message}");
+                _logger.LogError(ex, "Error loading chapter from {FilePath}", filePath);
             }
         }
 
