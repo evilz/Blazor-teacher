@@ -260,6 +260,10 @@ public class ChapterService
             ChapterCategory.Dashboard => "📊 Dashboard",
             ChapterCategory.Advanced => "🎯 Advanced Topics",
             ChapterCategory.WrapUp => "🎉 Wrap-Up",
+            ChapterCategory.CSharpFundamentals => "💻 C# 14 Fundamentals",
+            ChapterCategory.CSharpTypes => "🏗️ Building Types with C#",
+            ChapterCategory.DataAccess => "📂 Data Access & LINQ",
+            ChapterCategory.NextSteps => "🚀 Next Steps",
             _ => category.ToString()
         };
     }

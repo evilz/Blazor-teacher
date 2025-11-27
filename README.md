@@ -4,7 +4,7 @@ An interactive .NET 10 tutorial that demonstrates building a full REST API with 
 
 ## 📚 Full Tutorial Outline
 
-This tutorial consists of **28 chapters** organized into the following sections, with built-in progress tracking:
+This tutorial consists of **40 chapters** organized into the following sections, with built-in progress tracking:
 
 ### 📖 Introduction (Chapter 1)
 - What .NET 10 brings
@@ -53,6 +53,26 @@ This tutorial consists of **28 chapters** organized into the following sections,
 
 ### 🎉 Wrap-Up (Chapter 28)
 - Recap the journey and what was learned
+
+### 💻 C# 14 Fundamentals (Chapters 29-32)
+- Hello, C#! Welcome, .NET!
+- Speaking C# - Language fundamentals
+- Controlling Flow, Converting Types, and Handling Exceptions
+- Writing, Debugging, and Testing Functions
+
+### 🏗️ Building Types with C# (Chapters 33-35)
+- Building Your Own Types with OOP
+- Implementing Interfaces and Inheriting Classes
+- Packaging and Distributing .NET Types
+
+### 📂 Data Access & LINQ (Chapters 36-39)
+- Working with Common .NET Types
+- Working with Files, Streams, and Serialization
+- Working with Data Using Entity Framework Core
+- Querying and Manipulating Data Using LINQ
+
+### 🚀 Next Steps (Chapter 40)
+- Next Steps on Your C# and .NET Learning Journey
 
 ## 🎯 Learning Progress Tracking
 

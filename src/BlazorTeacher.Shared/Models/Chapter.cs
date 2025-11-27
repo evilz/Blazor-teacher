@@ -39,7 +39,11 @@ public enum ChapterCategory
     StateManagement = 5,
     Dashboard = 6,
     Advanced = 7,
-    WrapUp = 8
+    WrapUp = 8,
+    CSharpFundamentals = 9,
+    CSharpTypes = 10,
+    DataAccess = 11,
+    NextSteps = 12
 }
 
 /// <summary>
