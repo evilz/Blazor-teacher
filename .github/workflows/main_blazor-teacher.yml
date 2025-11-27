@@ -41,7 +41,7 @@ jobs:
       #  run: dotnet test --configuration Release --no-build --verbosity normal
 
       - name: dotnet publish
-        run: dotnet publish -c Release -o src/BlazorTeacher.Dashboard/BlazorTeacher.Dashboard.csproj --output ${{ github.workspace }}/publish/dashboard --no-build
+        run: dotnet publish src/BlazorTeacher.Dashboard/BlazorTeacher.Dashboard.csproj -c Release -o ${{ github.workspace }}/publish/dashboard --no-build
       
       - name: Upload Dashboard artifact
         uses: actions/upload-artifact@v4
@@ -83,4 +83,5 @@ jobs:
           slot-name: 'Production'
           package: ${{ github.workspace }}/publish/dashboard
           
+
 
