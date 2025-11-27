@@ -9,6 +9,9 @@ on:
       - main
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 env:
   DOTNET_VERSION: '10.0.x'
   AZURE_WEBAPP_NAME: 'blazor-teacher'
@@ -36,17 +39,8 @@ jobs:
       - name: Test
         run: dotnet test --configuration Release --no-build --verbosity normal
 
-      - name: Publish API
-        run: dotnet publish src/BlazorTeacher.Api/BlazorTeacher.Api.csproj --configuration Release --output ${{ github.workspace }}/publish/api --no-build
-
       - name: Publish Dashboard
         run: dotnet publish src/BlazorTeacher.Dashboard/BlazorTeacher.Dashboard.csproj --configuration Release --output ${{ github.workspace }}/publish/dashboard --no-build
-
-      - name: Upload API artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: api-artifact
-          path: ${{ github.workspace }}/publish/api
 
       - name: Upload Dashboard artifact
         uses: actions/upload-artifact@v4
