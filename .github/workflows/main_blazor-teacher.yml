@@ -79,6 +79,10 @@ jobs:
           app-name: ${{ env.AZURE_WEBAPP_NAME }}
           slot-name: 'Production'
           package: ${{ github.workspace }}/publish/dashboard
+      
+      - name: Configure Azure Web App startup command
+        run: |
+          az webapp config set --resource-group RG-webapp --name ${{ env.AZURE_WEBAPP_NAME }} --startup-file "dotnet BlazorTeacher.Dashboard.dll"
           
 
 
