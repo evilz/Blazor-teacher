@@ -49,16 +49,16 @@ This separation ensures our code is maintainable and testable.
 
 Here's how the project structure looks:
 
-```
+```treeview
 BlazorTeacher/
-├── BlazorTeacher.Domain/
-│   └── Models/
-├── BlazorTeacher.Infrastructure/
-│   └── Data/
-├── BlazorTeacher.Api/
-│   └── Program.cs
-└── BlazorTeacher.Web/
-    └── Components/
+|-- BlazorTeacher.Domain/
+|   `-- Models/
+|-- BlazorTeacher.Infrastructure/
+|   `-- Data/
+|-- BlazorTeacher.Api/
+|   `-- Program.cs
+`-- BlazorTeacher.Web/
+    `-- Components/
 ```
 
 ---
