@@ -155,6 +155,10 @@ public static partial class MarkdownChapterParser
             "dashboard" => ChapterCategory.Dashboard,
             "advanced" => ChapterCategory.Advanced,
             "wrapup" => ChapterCategory.WrapUp,
+            "csharpfundamentals" => ChapterCategory.CSharpFundamentals,
+            "csharptypes" => ChapterCategory.CSharpTypes,
+            "dataaccess" => ChapterCategory.DataAccess,
+            "nextsteps" => ChapterCategory.NextSteps,
             _ => ChapterCategory.Introduction
         };
     }
