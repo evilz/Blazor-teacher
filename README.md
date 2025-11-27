@@ -4,29 +4,46 @@ An interactive .NET 10 tutorial that demonstrates building a full REST API with 
 
 ## 📚 Full Tutorial Outline
 
-This tutorial consists of **40 chapters** organized into the following sections, with built-in progress tracking:
+This tutorial consists of **40 chapters** organized for a beginner-to-expert learning path, with built-in progress tracking:
 
 ### 📖 Introduction (Chapter 1)
 - What .NET 10 brings
 - Architecture overview (API → Data → Blazor)
 - Learning goals and structure
 
-### 🛠️ Environment Setup (Chapters 2-3)
+### 💻 C# 14 Fundamentals (Chapters 2-5)
+- Hello, C#! Welcome, .NET!
+- Speaking C# - Language fundamentals
+- Controlling Flow, Converting Types, and Handling Exceptions
+- Writing, Debugging, and Testing Functions
+
+### 🏗️ Building Types with C# (Chapters 6-8)
+- Building Your Own Types with OOP
+- Implementing Interfaces and Inheriting Classes
+- Packaging and Distributing .NET Types
+
+### 📂 Data & Collections (Chapters 9-12)
+- Working with Common .NET Types
+- Working with Files, Streams, and Serialization
+- Working with Data Using Entity Framework Core
+- Querying and Manipulating Data Using LINQ
+
+### 🛠️ Environment Setup (Chapters 13-14)
 - Developer environment setup
 - Creating the solution structure
 
-### 🚀 API Development (Chapters 4-8)
+### 🚀 API Development (Chapters 15-19)
 - First API: Hello World
 - Domain Modeling
 - EF Core Setup (Infrastructure Layer)
 - CRUD Implementation
 - Validation, Error Handling & Logging
 
-### ⚡ Blazor Basics (Chapters 9-10)
+### ⚡ Blazor Basics (Chapters 20-21)
 - Blazor Dashboard: Introduction
 - Blazor Developer Environment Setup
 
-### 🧩 Components (Chapters 11-16)
+### 🧩 Components (Chapters 22-27)
 - Components at a Glance
 - Component Directives
 - Event Handling
@@ -34,44 +51,25 @@ This tutorial consists of **40 chapters** organized into the following sections,
 - Component Rendering & State
 - Building Reusable Components
 
-### 🔄 State Management (Chapters 17-21)
+### 🔄 State Management (Chapters 28-32)
 - Component Communication
 - Parameters
 - Cascading Parameters
 - Single Source of Truth
 - Styling & UI Foundations
 
-### 📊 Dashboard (Chapters 22-24)
+### 📊 Dashboard (Chapters 33-35)
 - Dashboard Pages Implementation
 - Integrating the API
 - Enriching the Dashboard
 
-### 🎯 Advanced Topics (Chapters 25-27)
+### 🎯 Advanced Topics (Chapters 36-38)
 - Testing (Optional)
 - Refactoring & Cleanup
 - Extending the Application (Optional)
 
-### 🎉 Wrap-Up (Chapter 28)
+### 🎉 Wrap-Up & Next Steps (Chapters 39-40)
 - Recap the journey and what was learned
-
-### 💻 C# 14 Fundamentals (Chapters 29-32)
-- Hello, C#! Welcome, .NET!
-- Speaking C# - Language fundamentals
-- Controlling Flow, Converting Types, and Handling Exceptions
-- Writing, Debugging, and Testing Functions
-
-### 🏗️ Building Types with C# (Chapters 33-35)
-- Building Your Own Types with OOP
-- Implementing Interfaces and Inheriting Classes
-- Packaging and Distributing .NET Types
-
-### 📂 Data Access & LINQ (Chapters 36-39)
-- Working with Common .NET Types
-- Working with Files, Streams, and Serialization
-- Working with Data Using Entity Framework Core
-- Querying and Manipulating Data Using LINQ
-
-### 🚀 Next Steps (Chapter 40)
 - Next Steps on Your C# and .NET Learning Journey
 
 ## 🎯 Learning Progress Tracking
