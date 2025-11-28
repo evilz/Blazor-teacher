@@ -346,7 +346,14 @@ else
     {
         if (firstRender)
         {
-            await JSRuntime.InvokeVoidAsync("PrismHelper.highlightAll");
+            try
+            {
+                await JSRuntime.InvokeVoidAsync("PrismHelper.highlightAll");
+            }
+            catch (JSException)
+            {
+                // Prism.js may not be loaded yet, ignore the error
+            }
         }
     }
 }
