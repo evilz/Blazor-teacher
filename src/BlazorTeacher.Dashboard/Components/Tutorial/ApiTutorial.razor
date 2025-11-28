@@ -1,4 +1,6 @@
 @page "/tutorial/api"
+@rendermode InteractiveServer
+@inject IJSRuntime JSRuntime
 
 <PageTitle>API Development Tutorial</PageTitle>
 
@@ -6,7 +8,7 @@
     <h1>🚀 REST API Development with .NET 10</h1>
     <p class="subtitle">Learn to build a complete CRUD API using ASP.NET Core, EF Core, and SQLite</p>
 
-    <nav class="table-of-contents">
+    <nav class="tutorial-toc">
         <h3>Table of Contents</h3>
         <ul>
             <li><a href="#setup">Environment Setup</a></li>
@@ -24,9 +26,9 @@
         <h2>1. Environment Setup</h2>
         <p>First, ensure you have .NET 10 SDK installed. Create a new solution with the following structure:</p>
         
-        <div class="code-block">
-            <div class="code-header">Terminal Commands</div>
-            <pre><code># Create solution and projects
+        <div class="tutorial-code-block">
+            <div class="tutorial-code-header">Terminal Commands</div>
+            <pre><code class="language-bash"># Create solution and projects
 dotnet new sln -n BlazorTeacher
 mkdir src
 cd src
@@ -56,7 +58,7 @@ dotnet add reference ../BlazorTeacher.Shared</code></pre>
         <h2>2. Solution Structure</h2>
         <p>Our solution follows a clean architecture approach with clear separation of concerns:</p>
         
-        <div class="file-tree">
+        <div class="tutorial-file-tree">
             <div class="tree-item folder">📁 BlazorTeacher/</div>
             <div class="tree-item folder indent-1">📁 src/</div>
             <div class="tree-item folder indent-2">📁 BlazorTeacher.Api/</div>
@@ -65,7 +67,7 @@ dotnet add reference ../BlazorTeacher.Shared</code></pre>
             <div class="tree-item folder indent-3">📁 Middleware/ - Error handling, logging</div>
             <div class="tree-item folder indent-3">📁 Validators/ - FluentValidation validators</div>
             <div class="tree-item folder indent-3">📁 Extensions/ - Mapping extensions</div>
-            <div class="tree-item file indent-3">📄 Program.cs - Application entry point</div>
+            <div class="tree-item indent-3">📄 Program.cs - Application entry point</div>
             <div class="tree-item folder indent-2">📁 BlazorTeacher.Shared/</div>
             <div class="tree-item folder indent-3">📁 Models/ - Domain entities</div>
             <div class="tree-item folder indent-3">📁 DTOs/ - Data Transfer Objects</div>
@@ -76,9 +78,9 @@ dotnet add reference ../BlazorTeacher.Shared</code></pre>
         <h2>3. Domain Modeling</h2>
         <p>Define your domain entities in the Shared project. Here's our Course entity:</p>
         
-        <div class="code-block">
-            <div class="code-header">Models/Course.cs</div>
-            <pre><code>public class Course
+        <div class="tutorial-code-block">
+            <div class="tutorial-code-header">Models/Course.cs</div>
+            <pre><code class="language-csharp">public class Course
 {
     public int Id { get; set; }
     public string Title { get; set; } = string.Empty;
@@ -103,7 +105,7 @@ public enum CourseLevel
 }</code></pre>
         </div>
 
-        <div class="info-box">
+        <div class="tutorial-info-box">
             <strong>💡 Best Practice:</strong> Use DTOs (Data Transfer Objects) to separate your API contract from your domain models. This allows you to change your internal models without breaking API consumers.
         </div>
     </section>
@@ -112,9 +114,9 @@ public enum CourseLevel
         <h2>4. EF Core & SQLite Configuration</h2>
         <p>Create a DbContext to configure Entity Framework Core with SQLite:</p>
         
-        <div class="code-block">
-            <div class="code-header">Data/AppDbContext.cs</div>
-            <pre><code>public class AppDbContext : DbContext
+        <div class="tutorial-code-block">
+            <div class="tutorial-code-header">Data/AppDbContext.cs</div>
+            <pre><code class="language-csharp">public class AppDbContext : DbContext
 {
     public AppDbContext(DbContextOptions&lt;AppDbContext&gt; options) 
         : base(options) { }
@@ -144,9 +146,9 @@ public enum CourseLevel
 }</code></pre>
         </div>
         
-        <div class="code-block">
-            <div class="code-header">Program.cs - Service Registration</div>
-            <pre><code>// Configure SQLite with EF Core
+        <div class="tutorial-code-block">
+            <div class="tutorial-code-header">Program.cs - Service Registration</div>
+            <pre><code class="language-csharp">// Configure SQLite with EF Core
 builder.Services.AddDbContext&lt;AppDbContext&gt;(options =&gt;
     options.UseSqlite(builder.Configuration
         .GetConnectionString("DefaultConnection") 
@@ -158,9 +160,9 @@ builder.Services.AddDbContext&lt;AppDbContext&gt;(options =&gt;
         <h2>5. Database Migrations</h2>
         <p>Use EF Core migrations to manage database schema changes:</p>
         
-        <div class="code-block">
-            <div class="code-header">Terminal Commands</div>
-            <pre><code># Create initial migration
+        <div class="tutorial-code-block">
+            <div class="tutorial-code-header">Terminal Commands</div>
+            <pre><code class="language-bash"># Create initial migration
 dotnet ef migrations add InitialCreate
 
 # Apply migrations to database
@@ -173,7 +175,7 @@ dotnet ef migrations add AddNewField
 dotnet ef migrations remove</code></pre>
         </div>
 
-        <div class="info-box info-warning">
+        <div class="tutorial-info-box warning">
             <strong>⚠️ Note:</strong> In this tutorial, we use <code>EnsureCreated()</code> for simplicity. In production, always use migrations for proper schema management.
         </div>
     </section>
@@ -182,9 +184,9 @@ dotnet ef migrations remove</code></pre>
         <h2>6. Input Validation with FluentValidation</h2>
         <p>Use FluentValidation for robust, testable validation rules:</p>
         
-        <div class="code-block">
-            <div class="code-header">Validators/CourseValidators.cs</div>
-            <pre><code>public class CreateCourseValidator : AbstractValidator&lt;CreateCourseDto&gt;
+        <div class="tutorial-code-block">
+            <div class="tutorial-code-header">Validators/CourseValidators.cs</div>
+            <pre><code class="language-csharp">public class CreateCourseValidator : AbstractValidator&lt;CreateCourseDto&gt;
 {
     public CreateCourseValidator()
     {
@@ -209,9 +211,9 @@ dotnet ef migrations remove</code></pre>
         <h2>7. Global Error Handling</h2>
         <p>Implement middleware for centralized exception handling:</p>
         
-        <div class="code-block">
-            <div class="code-header">Middleware/GlobalExceptionMiddleware.cs</div>
-            <pre><code>public class GlobalExceptionMiddleware
+        <div class="tutorial-code-block">
+            <div class="tutorial-code-header">Middleware/GlobalExceptionMiddleware.cs</div>
+            <pre><code class="language-csharp">public class GlobalExceptionMiddleware
 {
     private readonly RequestDelegate _next;
     private readonly ILogger&lt;GlobalExceptionMiddleware&gt; _logger;
@@ -250,9 +252,9 @@ dotnet ef migrations remove</code></pre>
         <h2>8. Structured Logging with Serilog</h2>
         <p>Configure Serilog for structured, queryable logs:</p>
         
-        <div class="code-block">
-            <div class="code-header">Program.cs</div>
-            <pre><code>using Serilog;
+        <div class="tutorial-code-block">
+            <div class="tutorial-code-header">Program.cs</div>
+            <pre><code class="language-csharp">using Serilog;
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Debug()
@@ -283,157 +285,26 @@ finally
         </div>
     </section>
 
-    <div class="next-steps">
+    <div class="tutorial-next-steps">
         <h3>🎯 Next Steps</h3>
         <p>Now that you understand the API architecture, explore the Blazor components tutorial to learn how to build a dashboard that consumes this API!</p>
-        <a href="/tutorial/components" class="btn btn-primary">Continue to Components Tutorial →</a>
+        <a href="/tutorial/components" class="tutorial-btn tutorial-btn-primary">Continue to Components Tutorial →</a>
     </div>
 </div>
 
-<style>
-    .tutorial-page {
-        max-width: 900px;
-        margin: 0 auto;
-        padding: 2rem;
-        line-height: 1.7;
+@code {
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            try
+            {
+                await JSRuntime.InvokeVoidAsync("PrismHelper.highlightAll");
+            }
+            catch (JSException)
+            {
+                // Prism.js may not be loaded yet, ignore the error
+            }
+        }
     }
-
-    .tutorial-page h1 {
-        margin-bottom: 0.5rem;
-    }
-
-    .subtitle {
-        color: #666;
-        font-size: 1.1rem;
-        margin-bottom: 2rem;
-    }
-
-    .table-of-contents {
-        background: #f8f9fa;
-        padding: 1.5rem;
-        border-radius: 8px;
-        margin-bottom: 2rem;
-    }
-
-    .table-of-contents h3 {
-        margin: 0 0 1rem 0;
-    }
-
-    .table-of-contents ul {
-        margin: 0;
-        padding-left: 1.5rem;
-    }
-
-    .table-of-contents li {
-        margin: 0.5rem 0;
-    }
-
-    .table-of-contents a {
-        color: #3498db;
-        text-decoration: none;
-    }
-
-    .table-of-contents a:hover {
-        text-decoration: underline;
-    }
-
-    .tutorial-section {
-        margin-bottom: 3rem;
-        padding-top: 1rem;
-        border-top: 1px solid #eee;
-    }
-
-    .tutorial-section h2 {
-        color: #333;
-        margin-bottom: 1rem;
-    }
-
-    .code-block {
-        background: #1e1e1e;
-        border-radius: 8px;
-        overflow: hidden;
-        margin: 1rem 0;
-    }
-
-    .code-header {
-        background: #333;
-        color: #aaa;
-        padding: 0.5rem 1rem;
-        font-size: 0.85rem;
-    }
-
-    .code-block pre {
-        margin: 0;
-        padding: 1rem;
-        overflow-x: auto;
-    }
-
-    .code-block code {
-        color: #d4d4d4;
-        font-family: 'Consolas', 'Monaco', monospace;
-        font-size: 0.9rem;
-        line-height: 1.5;
-    }
-
-    .file-tree {
-        background: #f8f9fa;
-        padding: 1rem;
-        border-radius: 8px;
-        font-family: monospace;
-    }
-
-    .tree-item {
-        padding: 0.25rem 0;
-    }
-
-    .indent-1 { margin-left: 1rem; }
-    .indent-2 { margin-left: 2rem; }
-    .indent-3 { margin-left: 3rem; }
-
-    .info-box {
-        background: #e3f2fd;
-        border-left: 4px solid #2196f3;
-        padding: 1rem;
-        margin: 1rem 0;
-        border-radius: 0 8px 8px 0;
-    }
-
-    .info-box.info-warning {
-        background: #fff8e1;
-        border-left-color: #ffc107;
-    }
-
-    .next-steps {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        padding: 2rem;
-        border-radius: 12px;
-        text-align: center;
-    }
-
-    .next-steps h3 {
-        margin: 0 0 1rem 0;
-    }
-
-    .next-steps p {
-        margin: 0 0 1.5rem 0;
-        opacity: 0.9;
-    }
-
-    .btn {
-        display: inline-block;
-        padding: 0.75rem 1.5rem;
-        border-radius: 6px;
-        text-decoration: none;
-        font-weight: 500;
-    }
-
-    .btn-primary {
-        background: white;
-        color: #667eea;
-    }
-
-    .btn-primary:hover {
-        background: #f0f0f0;
-    }
-</style>
+}
